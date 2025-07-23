@@ -2,12 +2,14 @@ import { defineSchema, defineTable } from "convex/server";
 import { v } from "convex/values";
 
 export default defineSchema({
+    //ユーザー情報に関するテーブル
     users: defineTable({
         user_name: v.string(),
         email: v.string(),
         password: v.string(),
     }).index("by_user_name", ["user_name"]),
 
+    //ユーザーのプロフィール情報に関するテーブル
     p_data: defineTable({
         userId: v.id("users"),
         gender: v.union(
@@ -28,6 +30,7 @@ export default defineSchema({
         ),
     }).index("by_userId", ["userId"]).unique(),
 
+    //トレーニングデータを記録するテーブル
     t_data: defineTable({
         userId: v.id("users"),
         date: v.number(),
@@ -36,6 +39,7 @@ export default defineSchema({
         kcal_cons: v.number(),
     }).index("by_userId", ["userId"]),
 
+    //食事データを記録するテーブル
     f_data: defineTable({
         userId: v.id("users"),
         date: v.number(),
