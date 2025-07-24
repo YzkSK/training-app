@@ -3,7 +3,7 @@ import * as WebBrowser from "expo-web-browser";
 import { useOAuth } from "@clerk/clerk-expo";
 import { Platform } from "react-native";
 import * as Linking from "expo-linking";
-import Button from "./Button";
+import Button from "../Button";
 
 type Props = {
     strategy: string,

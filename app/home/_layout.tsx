@@ -51,7 +51,7 @@ export default function HomeTabLayout() {
             <TabBarIcon name={focused ? 'code-slash' : 'code-slash-outline'} color={color} />
           ),
         }}
-      /> 
+      />
       */}
     </Tabs>
   );

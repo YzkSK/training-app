@@ -3,7 +3,7 @@
 import { Text, Pressable, StyleSheet, type PressableProps } from 'react-native';
 import React from 'react';
 
-// ボタンコンポーネントが受け取るpropsの型を定義
+// ボタンコンポーネントが受け取るprops（プロパティ）の型を定義
 interface ButtonProps extends PressableProps {
     children: React.ReactNode;
     }
@@ -11,16 +11,16 @@ interface ButtonProps extends PressableProps {
     export default function Button({ children, ...props }: ButtonProps) {
     return (
         <Pressable {...props} style={styles.button}>
-        {/* ボタンのテキストは子要素として受け取る */}
+        {/* ボタンのテキストは、<Button>ここに書かれた内容</Button>として受け取る */}
         <Text style={styles.buttonText}>{children}</Text>
         </Pressable>
     );
     }
 
-    // ボタンのスタイルを定義
+    // ボタンのスタイルを定義（ここでデザインを自由に変更できます）
     const styles = StyleSheet.create({
     button: {
-        backgroundColor: '#007AFF', // ボタンの背景色（iOSの標準的な青）
+        backgroundColor: '#007AFF', // ボタンの背景色
         paddingVertical: 12,
         paddingHorizontal: 24,
         borderRadius: 8,
