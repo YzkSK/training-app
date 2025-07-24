@@ -29,31 +29,4 @@ export default defineSchema({
             v.literal(5)
         ),
     }).index("by_userId", ["userId"]).unique(),
-
-    //トレーニングデータを記録するテーブル
-    t_data: defineTable({
-        userId: v.id("users"),
-        date: v.number(),
-        menu: v.string(),
-        time_or_count: v.string(),
-        kcal_cons: v.number(),
-    }).index("by_userId", ["userId"]),
-
-    //食事データを記録するテーブル
-    f_data: defineTable({
-        userId: v.id("users"),
-        date: v.number(),
-        time: v.string(),
-        menu: v.string(),
-        kcal: v.number(),
-    }).index("by_userId", ["userId"]),
-
-    //トレーニング動画を記録するテーブル
-    t_video: defineTable({
-        userId: v.id("users"),
-        traning_name: v.string(),
-        video_url: v.string(),
-        count: v.number(),
-        kcal_cons: v.number(),
-    }).index("by_userId", ["userId"]),
 });
