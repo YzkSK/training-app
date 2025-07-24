@@ -1,84 +1,75 @@
-import { ClerkProvider, useAuth } from '@clerk/clerk-expo';
-import { ConvexProviderWithClerk } from 'convex/react-clerk';
-import { ConvexReactClient } from 'convex/react';
-import * as SecureStore from 'expo-secure-store';
-import { Stack, useRouter, useSegments } from 'expo-router';
+import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
 import { useFonts } from 'expo-font';
+import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
-import { useEffect } from 'react';
+import React from 'react';
+import 'react-native-reanimated';
 
-// Convexクライアントの初期化
-const convex = new ConvexReactClient(process.env.EXPO_PUBLIC_CONVEX_URL!);
+import { useColorScheme } from '@/hooks/useColorScheme';
+import { ClerkLoaded, ClerkProvider, useAuth } from '@clerk/clerk-expo';
+import * as SecureStore from 'expo-secure-store'
 
-// Clerkの公開鍵
-const publishableKey = process.env.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY!;
+const publishableKey = process.env.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY!
 if (!publishableKey) {
-    throw new Error('Missing Publishable Key. Please set EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY in your .env');
-}
+    throw new Error(
+        'Missing Publishable Key. Please set EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY in your .env',
+    )
+    }
 
-// Clerkの認証情報を安全に保存するためのトークンキャッシュ
-const tokenCache = {
+    const tokenCache = {
     async getToken(key: string) {
         try {
-        return await SecureStore.getItemAsync(key);
-        } catch (err) {
-        return null;
+        const item = await SecureStore.getItemAsync(key)
+        if (item) {
+            console.log(`${key} was used 🔐 \n`)
+        } else {
+            console.log('No values stored under key: ' + key)
+        }
+        return item
+        } catch (error) {
+        console.error('SecureStore get item error: ', error)
+        await SecureStore.deleteItemAsync(key)
+        return null
         }
     },
     async saveToken(key: string, value: string) {
         try {
-        return await SecureStore.setItemAsync(key, value);
+        return SecureStore.setItemAsync(key, value)
         } catch (err) {
-        return;
+        return
         }
     },
-};
+    }
 
-// スプラッシュスクリーンが自動で消えないように設定
-SplashScreen.preventAutoHideAsync();
+    // Prevent the splash screen from auto-hiding before asset loading is complete.
+    SplashScreen.preventAutoHideAsync();
 
-// このコンポーネントがアプリの最上位のレイアウトを定義
-function InitialLayout() {
-    const { isLoaded, isSignedIn } = useAuth();
-    const segments = useSegments();
-    const router = useRouter();
+    export default function RootLayout() {
+    const colorScheme = useColorScheme();
+    const [loaded] = useFonts({
+        SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
+    });
 
-    useEffect(() => {
-        // Clerkの認証状態の読み込みが終わったら…
-        if (isLoaded) {
-        const inAuthGroup = segments[0] === '(auth)';
-
-        // 認証済みで、(auth)画面にいる場合は、ホームへリダイレクト
-        if (isSignedIn && inAuthGroup) {
-            router.replace('/(home)');
-        }
-        // 未認証で、(auth)画面以外にいる場合は、サインイン画面へリダイレクト
-        else if (!isSignedIn && !inAuthGroup) {
-            router.replace('/(auth)/signIn');
-        }
-
-        // リダイレクト処理が終わったらスプラッシュスクリーンを非表示
+    React.useEffect(() => {
+        if (loaded) {
         SplashScreen.hideAsync();
         }
-    }, [isLoaded, isSignedIn]);
+    }, [loaded]);
 
-    return <Stack screenOptions={{ headerShown: false }} />;
-}
-
-// --- 3. ルートレイアウトの最終定義 ---
-
-export default function RootLayout() {
-  // useFontsフックでフォントなどを読み込むことも可能
-  // const [fontsLoaded] = useFonts({...});
+    if (!loaded) {
+        return null;
+    }
 
     return (
-        // ClerkProviderでアプリ全体を包み、認証機能を使えるようにする
         <ClerkProvider tokenCache={tokenCache} publishableKey={publishableKey}>
-        {/* ConvexProviderWithClerkでClerkと連携したバックエンド機能を使えるようにする */}
-        <ConvexProviderWithClerk client={convex}>
-            {/* InitialLayoutコンポーネントでリダイレクト処理と画面の骨格を定義 */}
-            <InitialLayout />
-        </ConvexProviderWithClerk>
+        <ClerkLoaded>
+            <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
+            <Stack>
+                <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+                <Stack.Screen name="+not-found" />
+            </Stack>
+            </ThemeProvider>
+        </ClerkLoaded>
         </ClerkProvider>
     );
 }
