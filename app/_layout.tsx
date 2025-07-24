@@ -1,39 +1,83 @@
 import { Stack } from 'expo-router';
+import { ClerkProvider, useAuth } from '@clerk/clerk-expo';
+import * as SecureStore from 'expo-secure-store';
+import React from 'react';
+import { ModeProvider } from './contexts/ModeContext'; // パスが変更になりました: ./src/contexts -> ./contexts
+import { View, Text, StyleSheet, ActivityIndicator } from 'react-native';
 
-export default function Layout() {
+const CLERK_PUBLISHABLE_KEY = process.env.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY;
+
+const tokenCache = {
+  async getToken(key: string) {
+    try {
+      return SecureStore.getItemAsync(key);
+    } catch (err) {
+      console.error("Failed to get token from SecureStore", err);
+      return null;
+    }
+  },
+  async saveToken(key: string, value: string) {
+    try {
+      return SecureStore.setItemAsync(key, value);
+    } catch (err) {
+      console.error("Failed to save token to SecureStore", err);
+      return;
+    }
+  },
+};
+
+function ClerkLoadingScreen() {
   return (
-    // アプリケーションのルートにStackナビゲーターを配置します。
-    // これにより、すべての画面がこのスタックの一部として管理されます。
-    <Stack>
-      {/* ドロワーナビゲーター全体をStackのスクリーンとして定義します。
-          これにより、ドロワー内のすべての画面がスタックナビゲーションの一部になります。
-          headerShown: false に設定することで、ドロワー自身がヘッダーを管理します。
-          この '(drawer)' は、app/(drawer) フォルダ内の _layout.tsx を参照します。
-      */}
-      <Stack.Screen
-        name="drawer"
-        options={{ headerShown: false }} // ドロワーのヘッダーを非表示にする
-      />
-
-      {/* ドロワーには表示されないが、フローティングアクションボタンから遷移させたい画面を
-          Stackの直接の子として定義します。これにより、router.push() でアクセス可能になります。
-      */}
-      <Stack.Screen
-        name="add-fitness" // app/add-fitness.tsx
-        options={{
-          title: '運動項目追加', // 画面のタイトル
-          presentation: 'modal', // モーダル表示にする場合は 'modal' を使用
-        }}
-      />
-      <Stack.Screen
-        name="add-recipe" // app/add-recipe.tsx
-        options={{
-          title: 'レシピ追加', // 画面のタイトル
-          presentation: 'modal', // モーダル表示にする場合は 'modal' を使用
-        }}
-      />
-      {/* その他のルートレベルのスクリーンがあればここに追加します */}
-    </Stack>
+    <View style={loadingStyles.container}>
+      <ActivityIndicator size="large" color="#0000ff" />
+      <Text style={loadingStyles.text}>認証情報を読み込み中...</Text>
+    </View>
   );
 }
 
+const loadingStyles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#fff',
+  },
+  text: {
+    fontSize: 18,
+    color: '#333',
+    marginTop: 10,
+  },
+});
+
+export default function RootLayout() {
+  return (
+    <ClerkProvider tokenCache={tokenCache} publishableKey={CLERK_PUBLISHABLE_KEY}>
+      <InitialLayout />
+    </ClerkProvider>
+  );
+}
+
+function InitialLayout() {
+  const { isLoaded, isSignedIn } = useAuth();
+
+  if (!isLoaded) {
+    return <ClerkLoadingScreen />;
+  }
+
+  return (
+    <ModeProvider>
+      <Stack screenOptions={{ headerShown: false }}>
+        {isSignedIn ? (
+          <>
+            <Stack.Screen name="home" options={{ headerShown: false }} />
+            <Stack.Screen name="add-fitness" options={{ presentation: 'modal' }} />
+            <Stack.Screen name="add-recipe" options={{ presentation: 'modal' }} />
+            <Stack.Screen name="mode-selection" options={{ presentation: 'modal' }} />
+          </>
+        ) : (
+          <Stack.Screen name="auth" options={{ headerShown: false }} />
+        )}
+      </Stack>
+    </ModeProvider>
+  );
+}
