@@ -14,10 +14,10 @@ import type {
   FunctionReference,
 } from "convex/server";
 import type * as f_data from "../f_data.js";
-import type * as login_users from "../login/users.js";
-import type * as p_data from "../p_data.js";
+import type * as p_data from "../p_../users.js
 import type * as t_data from "../t_data.js";
 import type * as t_video from "../t_video.js";
+import type * as users from "../users.js";
 
 /**
  * A utility for referencing Convex functions in your app's API.
@@ -29,10 +29,10 @@ import type * as t_video from "../t_video.js";
  */
 declare const fullApi: ApiFromModules<{
   f_data: typeof f_data;
-  "login/users": typeof login_users;
   p_data: typeof p_data;
   t_data: typeof t_data;
   t_video: typeof t_video;
+  users: typeof users;
 }>;
 export declare const api: FilterApi<
   typeof fullApi,
