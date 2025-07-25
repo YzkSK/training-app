@@ -1,15 +1,15 @@
-import React from 'react';
-import { View, Text, TextInput, ActivityIndicator, StyleSheet } from 'react-native';
 import { useSignUp } from '@clerk/clerk-expo';
 import { Link, useRouter } from 'expo-router';
+import React from 'react';
+import { ActivityIndicator, StyleSheet, Text, TextInput, View } from 'react-native';
 
 // Custom components and styles from your project
-import { styles as customStyles } from '@/constants/styles';
 import Button from '@/components/Button';
-import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
-import { ThemedView } from '@/components/ThemedView';
-import { ThemedText } from '@/components/ThemedText';
 import OAuthButton from '@/components/OAuthButton';
+import { ThemedText } from '@/components/ThemedText';
+import { ThemedView } from '@/components/ThemedView';
+import { styles as customStyles } from '@/constants/styles';
+import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 
 export default function SignUpScreen() {
   const { isLoaded, signUp, setActive } = useSignUp();
