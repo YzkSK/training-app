@@ -21,14 +21,16 @@ export default function Layout() {
       <Stack.Screen
         name="add-fitness" // app/add-fitness.tsx
         options={{
-          title: '運動項目追加', // 画面のタイトル
+          title: '運動項目追加',
+          headerShown: false, // 画面のタイトル
           presentation: 'modal', // モーダル表示にする場合は 'modal' を使用
         }}
       />
       <Stack.Screen
-        name="add-recipe" // app/add-recipe.tsx
+        name="nutrition-plan" // app/nutrition-plan.tsx
         options={{
-          title: 'レシピ追加', // 画面のタイトル
+          title: '栄養プラン',
+          headerShown: false, // 画面のタイトル
           presentation: 'modal', // モーダル表示にする場合は 'modal' を使用
         }}
       />

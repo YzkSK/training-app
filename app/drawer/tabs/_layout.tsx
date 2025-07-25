@@ -1,5 +1,5 @@
 import { FontAwesome6 } from '@expo/vector-icons';
-import MaterialIcons from '@expo/vector-icons/MaterialIcons';
+import Entypo from '@expo/vector-icons/Entypo';
 import { Tabs } from 'expo-router';
 import { Provider as PaperProvider, Portal } from 'react-native-paper'; // ProviderとPortalをインポート
 
@@ -11,24 +11,26 @@ export default function TabLayout() {
       <Portal.Host>
         <Tabs screenOptions={{ tabBarActiveTintColor: 'blue' }}>
           <Tabs.Screen
-            name="fitness"
+            name="Weight Training"
             options={{
-              title: 'Fitness',
+              title: 'Weight Training',
               headerShown: false, // ヘッダーを非表示にする
-              tabBarIcon: ({ color }) => <FontAwesome6 name="person-walking" size={24} color={color} />,
+              tabBarIcon: ({ color }) => <FontAwesome6 name="dumbbell" size={25} color={color} />
             }}
         />
 
           <Tabs.Screen
-            name="recipe"
+            name="BodyWeight Training"
             options={{
-              title: 'Recipe',
+              title: 'Bodyweight Training',
               headerShown: false, // ヘッダーを非表示にする
-              tabBarIcon: ({ color }) => <MaterialIcons size={28} name="set-meal" color={color} />,
+              tabBarIcon: ({ color }) => <Entypo name="man" size={24} color={color} />
             }}
           />
         </Tabs>
       </Portal.Host>
     </PaperProvider>
+
+    
   );
 }

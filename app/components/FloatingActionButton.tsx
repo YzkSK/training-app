@@ -39,11 +39,11 @@ const FloatingActionButton: React.FC<FloatingActionButtonProps> = () => {
           },
           {
             icon: 'silverware-fork-knife', // レシピ系のアイコンに変更
-            label: 'レシピ追加',
+            label: '栄養素計算、食事提案',
             labelStyle: { color: 'black' }, // ラベルの色を黒に設定
             onPress: () => {
-              console.log('レシピ追加を押しました');
-              router.push('/add-recipe'); // 新しいレシピ追加画面へ遷移
+              console.log('栄養素計算、食事提案を押しました');
+              router.push('/nutrition-plan'); // 新しい栄養プラン画面へ遷移
             },
           },
         ]}
