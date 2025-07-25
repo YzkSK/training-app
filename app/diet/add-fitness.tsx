@@ -1,19 +1,17 @@
-// app/add-fitness.tsx
-import { StyleSheet, Text, View } from 'react-native';
+// app/diet/add-fitness.tsx (SelectableListScreen が使用されていると思われる場所)
+import React from 'react';
+import { SelectableListScreen } from '../../components/SelectableListScreen'; // 必要に応じてパスを調整
+import { PlaylistProvider } from '../drawer/contexts/PlaylistContext'; // 必要に応じてパスを調整
 
-export default function AddFitnessScreen() {
+// このコンポーネントは、Expo Router の設定における画面の一つであると思われます。
+// PlaylistProvider で SelectableListScreen をラップする必要があります。
+const AddFitnessScreen: React.FC = () => {
   return (
-    <View style={styles.container}>
-      <Text>運動項目追加画面</Text>
-      {/* ここに運動項目追加のフォームやUIを追加 */}
-    </View>
+    <PlaylistProvider>
+      {/* SelectableListScreen はすでに SafeAreaView を処理しています */}
+      <SelectableListScreen />
+    </PlaylistProvider>
   );
-}
+};
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-});
+export default AddFitnessScreen;

@@ -1,46 +1,43 @@
+// app/drawer/_layout.tsx (修正後)
 import { Drawer } from 'expo-router/drawer';
+import React from 'react';
+import { PlaylistProvider } from './contexts/PlaylistContext'; // PlaylistProvider をインポート
 
 export default function Layout() {
   return (
-    <Drawer>
-      {/* (tabs)グループをDrawerのスクリーンとして定義します。
-          これにより、タブナビゲーションがドロワーメニューからアクセスできるようになります。
-          headerShown: false を設定しないことで、Drawerが自動的にヘッダーとハンバーガーアイコンを提供します。
-      */}
-      <Drawer.Screen
-        name="tabs"
-        options={{
-          title: 'メイン', // ドロワーメニューに表示されるタイトル
-        }}
-      />
+    // ★ ここに PlaylistProvider を配置し、Drawer ナビゲーター全体をラップします
+    <PlaylistProvider>
+      <Drawer>
+        {/* タブナビゲーターグループ */}
+        <Drawer.Screen
+          name="tabs" // app/drawer/tabs/_layout.tsx を参照
+          options={{
+            title: 'メイン', // ドロワーメニューに表示されるタイトル
+          }}
+        />
 
-      {/* ドロワーに直接追加したいスクリーンのみをここに記述します。
-          これにより、profile.tsx のみがドロワーメニューに表示され、
-          他のルートファイル（例: index.tsx, components/FloatingActionButton.tsxなど）は表示されなくなります。
-      */}
-      <Drawer.Screen
-        name="profile" // app/profile.tsx (存在しない場合は作成してください)
-        options={{
-          title: 'プロフィール', // ドロワーメニューに表示されるタイトル
-        }}
-      />
-      <Drawer.Screen
-        name="index"
-        redirect={true} // app/index.tsx (存在しない場合は作成してください)
-      />
-      <Drawer.Screen
-        name="components/FloatingActionButton"
-        redirect={true} // app/components/FloatingActionButton.tsx (存在しない場合は作成してください)
-      />
-      <Drawer.Screen
-        name="add-fitness"
-        redirect={true} 
-      />
-      <Drawer.Screen
-        name="add-recipe"
-        redirect={true} 
-      />
-    </Drawer>
+        {/* プロフィール画面 */}
+        <Drawer.Screen
+          name="profile" // app/drawer/profile.tsx
+          options={{
+            title: 'プロフィール',
+          }}
+        />
 
+        {/* 再生リスト一覧画面への導線
+        <Drawer.Screen
+          name="PlaylistList" // app/PlaylistList.tsx を参照
+          options={{
+            title: 'マイ再生リスト',
+          }}
+        /> */}
+
+        {/* その他のルート */}
+        <Drawer.Screen name="index" redirect={true} />
+        <Drawer.Screen name="components/FloatingActionButton" redirect={true} />
+        <Drawer.Screen name="diet/add-fitness" redirect={true} />
+        <Drawer.Screen name="diet/add-recipe" redirect={true} />
+      </Drawer>
+    </PlaylistProvider>
   );
 }
