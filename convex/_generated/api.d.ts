@@ -14,7 +14,7 @@ import type {
   FunctionReference,
 } from "convex/server";
 import type * as f_data from "../f_data.js";
-import type * as p_data from "../p_../users.js
+import type * as p_data from "../p_data.js";
 import type * as t_data from "../t_data.js";
 import type * as t_video from "../t_video.js";
 import type * as users from "../users.js";
