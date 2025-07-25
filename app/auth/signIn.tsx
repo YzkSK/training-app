@@ -1,14 +1,14 @@
-import { useSignIn } from '@clerk/clerk-expo';
-import { Link, useRouter } from 'expo-router';
-import { Text, View, ActivityIndicator, TextInput, StyleSheet } from 'react-native';
-import React from 'react';
 import Button from '@/components/Button'; // カスタムコンポーネント
 import OAuthButton from '@/components/OAuthButton'; // カスタムコンポーネント
-import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import { ThemedText } from '@/components/ThemedText'; // カスタムコンポーネント
 import { ThemedView } from '@/components/ThemedView'; // カスタムコンポーネント
 import { styles as customStyles } from "@/constants/styles"; // カスタムスタイル
+import { useSignIn } from '@clerk/clerk-expo';
 import { Ionicons } from '@expo/vector-icons';
+import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
+import { Link, useRouter } from 'expo-router';
+import React from 'react';
+import { ActivityIndicator, StyleSheet, Text, TextInput, View } from 'react-native';
 
 export default function SignInScreen() {
   const { signIn, setActive, isLoaded } = useSignIn();
