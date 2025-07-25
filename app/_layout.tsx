@@ -1,38 +1,75 @@
+import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
+import { useFonts } from 'expo-font';
 import { Stack } from 'expo-router';
+import * as SplashScreen from 'expo-splash-screen';
+import React from 'react';
+import 'react-native-reanimated';
 
-export default function Layout() {
-  return (
-    // アプリケーションのルートにStackナビゲーターを配置します。
-    // これにより、すべての画面がこのスタックの一部として管理されます。
-    <Stack>
-      {/* ドロワーナビゲーター全体をStackのスクリーンとして定義します。
-          これにより、ドロワー内のすべての画面がスタックナビゲーションの一部になります。
-          headerShown: false に設定することで、ドロワー自身がヘッダーを管理します。
-          この '(drawer)' は、app/(drawer) フォルダ内の _layout.tsx を参照します。
-      */}
-      <Stack.Screen
-        name="drawer"
-        options={{ headerShown: false }} // ドロワーのヘッダーを非表示にする
-      />
+import { useColorScheme } from '@/hooks/useColorScheme';
+import { ClerkLoaded, ClerkProvider, useAuth } from '@clerk/clerk-expo';
+import * as SecureStore from 'expo-secure-store'
 
-      {/* ドロワーには表示されないが、フローティングアクションボタンから遷移させたい画面を
-          Stackの直接の子として定義します。これにより、router.push() でアクセス可能になります。
-      */}
-      <Stack.Screen
-        name="add-fitness" // app/add-fitness.tsx
-        options={{
-          title: '運動項目追加', // 画面のタイトル
-          presentation: 'modal', // モーダル表示にする場合は 'modal' を使用
-        }}
-      />
-      <Stack.Screen
-        name="add-recipe" // app/add-recipe.tsx
-        options={{
-          title: 'レシピ追加', // 画面のタイトル
-          presentation: 'modal', // モーダル表示にする場合は 'modal' を使用
-        }}
-      />
-      {/* その他のルートレベルのスクリーンがあればここに追加します */}
-    </Stack>
-  );
+const publishableKey = process.env.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY!
+if (!publishableKey) {
+    throw new Error(
+        'Missing Publishable Key. Please set EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY in your .env',
+    )
+    }
+
+    const tokenCache = {
+    async getToken(key: string) {
+        try {
+        const item = await SecureStore.getItemAsync(key)
+        if (item) {
+            console.log(`${key} was used 🔐 \n`)
+        } else {
+            console.log('No values stored under key: ' + key)
+        }
+        return item
+        } catch (error) {
+        console.error('SecureStore get item error: ', error)
+        await SecureStore.deleteItemAsync(key)
+        return null
+        }
+    },
+    async saveToken(key: string, value: string) {
+        try {
+        return SecureStore.setItemAsync(key, value)
+        } catch (err) {
+        return
+        }
+    },
+    }
+
+    // Prevent the splash screen from auto-hiding before asset loading is complete.
+    SplashScreen.preventAutoHideAsync();
+
+    export default function RootLayout() {
+    const colorScheme = useColorScheme();
+    const [loaded] = useFonts({
+        SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
+    });
+
+    React.useEffect(() => {
+        if (loaded) {
+        SplashScreen.hideAsync();
+        }
+    }, [loaded]);
+
+    if (!loaded) {
+        return null;
+    }
+
+    return (
+        <ClerkProvider tokenCache={tokenCache} publishableKey={publishableKey}>
+        <ClerkLoaded>
+            <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
+            <Stack>
+                <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+                <Stack.Screen name="+not-found" />
+            </Stack>
+            </ThemeProvider>
+        </ClerkLoaded>
+        </ClerkProvider>
+    );
 }
