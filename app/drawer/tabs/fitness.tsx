@@ -1,5 +1,5 @@
+import FloatingActionButton from '@/components/FloatingActionButton';
 import { StyleSheet, Text, View } from 'react-native';
-import FloatingActionButton from '../../components/FloatingActionButton';
 
 export default function Tab() {
   return (
