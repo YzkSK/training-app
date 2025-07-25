@@ -71,5 +71,5 @@ if (!publishableKey) {
             </ThemeProvider>
         </ClerkLoaded>
         </ClerkProvider>
-    );
+    );s
 }
