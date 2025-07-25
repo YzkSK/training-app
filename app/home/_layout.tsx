@@ -1,10 +1,9 @@
-// app/home/_layout.tsx (既存ファイルを更新)
+import { Stack } from 'expo-router';
 import React from 'react';
-import { Redirect, Stack } from 'expo-router';
-import { useMode } from '../contexts/ModeContext'; // パスが変更になりました: ../src/contexts -> ../contexts
-import { View, Text, StyleSheet, ActivityIndicator } from 'react-native';
+import { ActivityIndicator, StyleSheet, Text, View } from 'react-native';
+import { useMode } from '../../contexts/ModeContext';
 
-// モード読み込み中の画面
+
 function LoadingScreen() {
   return (
     <View style={loadingStyles.container}>
@@ -33,10 +32,6 @@ export default function HomeLayout() {
 
   if (isLoading) {
     return <LoadingScreen />;
-  }
-
-  if (!currentMode) {
-    return <Redirect href="/mode-selection" />;
   }
 
   return (

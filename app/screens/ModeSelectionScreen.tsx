@@ -1,8 +1,7 @@
-// app/screens/ModeSelectionScreen.tsx  <-- パスが変更になりました
-import React from 'react';
-import { View, Text, Button, StyleSheet, Alert } from 'react-native';
+import { useMode } from '@/contexts/ModeContext';
 import { useRouter } from 'expo-router';
-import { useMode } from '../contexts/ModeContext'; // パスが変更になりました: src/contexts -> ../contexts
+import React from 'react';
+import { Alert, Button, StyleSheet, Text, View } from 'react-native';
 
 export default function ModeSelectionScreen() {
     const { setAndStoreMode } = useMode();

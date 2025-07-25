@@ -1,9 +1,9 @@
-import { Stack } from 'expo-router';
 import { ClerkProvider, useAuth } from '@clerk/clerk-expo';
+import { Stack } from 'expo-router';
 import * as SecureStore from 'expo-secure-store';
 import React from 'react';
-import { ModeProvider } from './contexts/ModeContext'; // パスが変更になりました: ./src/contexts -> ./contexts
-import { View, Text, StyleSheet, ActivityIndicator } from 'react-native';
+import { ActivityIndicator, StyleSheet, Text, View } from 'react-native';
+import { ModeProvider } from '../contexts/ModeContext';
 
 const CLERK_PUBLISHABLE_KEY = process.env.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY;
 
