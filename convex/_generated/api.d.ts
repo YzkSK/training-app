@@ -16,7 +16,6 @@ import type {
 import type * as f_data from "../f_data.js";
 import type * as login_users from "../login/users.js";
 import type * as p_data from "../p_data.js";
-import type * as schema from "../schema.js";
 import type * as t_data from "../t_data.js";
 import type * as t_video from "../t_video.js";
 
@@ -32,7 +31,6 @@ declare const fullApi: ApiFromModules<{
   f_data: typeof f_data;
   "login/users": typeof login_users;
   p_data: typeof p_data;
-  schema: typeof schema;
   t_data: typeof t_data;
   t_video: typeof t_video;
 }>;
