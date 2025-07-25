@@ -1,4 +1,4 @@
-import { SignOutButton } from '@/app/components/SignOutButton'
+import { SignOutButton } from '@/components/SignOutButton'
 import { SignedIn, SignedOut, useUser } from '@clerk/clerk-expo'
 import { Link } from 'expo-router'
 import React from 'react'

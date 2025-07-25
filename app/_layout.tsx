@@ -1,83 +1,75 @@
-import { ClerkProvider, useAuth } from '@clerk/clerk-expo';
+import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
+import { useFonts } from 'expo-font';
 import { Stack } from 'expo-router';
-import * as SecureStore from 'expo-secure-store';
+import * as SplashScreen from 'expo-splash-screen';
 import React from 'react';
-import { ActivityIndicator, StyleSheet, Text, View } from 'react-native';
-import { ModeProvider } from '../contexts/ModeContext';
+import 'react-native-reanimated';
 
-const CLERK_PUBLISHABLE_KEY = process.env.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY;
+import { useColorScheme } from '@/hooks/useColorScheme';
+import { ClerkLoaded, ClerkProvider, useAuth } from '@clerk/clerk-expo';
+import * as SecureStore from 'expo-secure-store'
 
-const tokenCache = {
-  async getToken(key: string) {
-    try {
-      return SecureStore.getItemAsync(key);
-    } catch (err) {
-      console.error("Failed to get token from SecureStore", err);
-      return null;
+const publishableKey = process.env.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY!
+if (!publishableKey) {
+    throw new Error(
+        'Missing Publishable Key. Please set EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY in your .env',
+    )
     }
-  },
-  async saveToken(key: string, value: string) {
-    try {
-      return SecureStore.setItemAsync(key, value);
-    } catch (err) {
-      console.error("Failed to save token to SecureStore", err);
-      return;
+
+    const tokenCache = {
+    async getToken(key: string) {
+        try {
+        const item = await SecureStore.getItemAsync(key)
+        if (item) {
+            console.log(`${key} was used 🔐 \n`)
+        } else {
+            console.log('No values stored under key: ' + key)
+        }
+        return item
+        } catch (error) {
+        console.error('SecureStore get item error: ', error)
+        await SecureStore.deleteItemAsync(key)
+        return null
+        }
+    },
+    async saveToken(key: string, value: string) {
+        try {
+        return SecureStore.setItemAsync(key, value)
+        } catch (err) {
+        return
+        }
+    },
     }
-  },
-};
 
-function ClerkLoadingScreen() {
-  return (
-    <View style={loadingStyles.container}>
-      <ActivityIndicator size="large" color="#0000ff" />
-      <Text style={loadingStyles.text}>認証情報を読み込み中...</Text>
-    </View>
-  );
-}
+    // Prevent the splash screen from auto-hiding before asset loading is complete.
+    SplashScreen.preventAutoHideAsync();
 
-const loadingStyles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#fff',
-  },
-  text: {
-    fontSize: 18,
-    color: '#333',
-    marginTop: 10,
-  },
-});
+    export default function RootLayout() {
+    const colorScheme = useColorScheme();
+    const [loaded] = useFonts({
+        SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
+    });
 
-export default function RootLayout() {
-  return (
-    <ClerkProvider tokenCache={tokenCache} publishableKey={CLERK_PUBLISHABLE_KEY}>
-      <InitialLayout />
-    </ClerkProvider>
-  );
-}
+    React.useEffect(() => {
+        if (loaded) {
+        SplashScreen.hideAsync();
+        }
+    }, [loaded]);
 
-function InitialLayout() {
-  const { isLoaded, isSignedIn } = useAuth();
+    if (!loaded) {
+        return null;
+    }
 
-  if (!isLoaded) {
-    return <ClerkLoadingScreen />;
-  }
-
-  return (
-    <ModeProvider>
-      <Stack screenOptions={{ headerShown: false }}>
-        {isSignedIn ? (
-          <>
-            <Stack.Screen name="home" options={{ headerShown: false }} />
-            <Stack.Screen name="add-fitness" options={{ presentation: 'modal' }} />
-            <Stack.Screen name="add-recipe" options={{ presentation: 'modal' }} />
-            <Stack.Screen name="mode-selection" options={{ presentation: 'modal' }} />
-          </>
-        ) : (
-          <Stack.Screen name="auth" options={{ headerShown: false }} />
-        )}
-      </Stack>
-    </ModeProvider>
-  );
+    return (
+        <ClerkProvider tokenCache={tokenCache} publishableKey={publishableKey}>
+        <ClerkLoaded>
+            <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
+            <Stack>
+                <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+                <Stack.Screen name="+not-found" />
+            </Stack>
+            </ThemeProvider>
+        </ClerkLoaded>
+        </ClerkProvider>
+    );s
 }
