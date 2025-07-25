@@ -1,48 +1,43 @@
-// app/(auth)/_layout.tsx
+// app/auth/_layout.tsx
 
-import { Redirect, Tabs } from 'expo-router';
-import { useAuth } from '@clerk/clerk-expo';
-import React from 'react';
-
-// ★ 修正点1: TabBarIconの代わりに、Ioniconsを直接インポート
-import { Ionicons } from '@expo/vector-icons';
 import { Colors } from '@/constants/Colors';
 import { useColorScheme } from '@/hooks/useColorScheme';
+import { Ionicons } from '@expo/vector-icons';
+import { Tabs } from 'expo-router';
+import React from 'react';
 
-export default function AuthRoutesLayout() {
+export default function AuthLayout() {
   const colorScheme = useColorScheme();
-  const { isSignedIn } = useAuth();
-
-  if (isSignedIn) {
-    return <Redirect href={'/(home)'} />;
-  }
 
   return (
     <Tabs
       screenOptions={{
         tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
         headerShown: false,
-      }}
-      sceneContainerStyle={{
-        backgroundColor: "white",
       }}>
       <Tabs.Screen
-        name="signIn"
+        name="signIn" // app/auth/signIn.tsx ファイルに対応
         options={{
           title: 'Sign In',
-          // ★ 修正点2: <TabBarIcon> の代わりに <Ionicons> を直接使う
           tabBarIcon: ({ color, focused }) => (
-            <Ionicons name={focused ? 'person' : 'person-outline'} size={28} color={color} />
+            <Ionicons
+              name={focused ? 'log-in' : 'log-in-outline'}
+              size={28}
+              color={color}
+            />
           ),
         }}
       />
       <Tabs.Screen
-        name="signUp"
+        name="signUp" // app/auth/signUp.tsx ファイルに対応
         options={{
           title: 'Sign Up',
-          // ★ 修正点3: こちらも同様に <Ionicons> を直接使う
           tabBarIcon: ({ color, focused }) => (
-            <Ionicons name={focused ? 'person-add' : 'person-add-outline'} size={28} color={color} />
+            <Ionicons
+              name={focused ? 'person-add' : 'person-add-outline'}
+              size={28}
+              color={color}
+            />
           ),
         }}
       />
