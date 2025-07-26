@@ -4,11 +4,11 @@ export default function TrainingLayout() {
   return (
     <Stack>
       <Stack.Screen
-        name="drawer"
+        name="trainingdrawer"
         options={{ headerShown: false }}
       />
       <Stack.Screen
-        name="add-fitness"
+        name="add-training"
         options={{
           title: '運動項目追加',
           headerShown: false,

@@ -5,7 +5,7 @@ export default function Layout() {
   return (
     <Drawer>
       <Drawer.Screen
-        name="tabs" // メインのタブ画面
+        name="trainingtabs" // メインのタブ画面
         options={{
           title: 'トレーニング記録',
           drawerIcon: ({ size, color }) => (

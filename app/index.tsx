@@ -3,6 +3,7 @@ import { useQuery } from "convex/react";
 import { Link } from 'expo-router';
 import { ActivityIndicator } from "react-native";
 import { Button, Text, YStack } from 'tamagui';
+import { SignOutButton } from '../components/SignOutButton';
 
 export default function Index() {
     // 1. ログイン中のユーザー「一人」の情報を取得する
@@ -49,6 +50,7 @@ export default function Index() {
             }}
         >
             <Text>Welcome, {currentUser.username ?? 'No name'}</Text>
+            <SignOutButton />
         </YStack>
     );
 }

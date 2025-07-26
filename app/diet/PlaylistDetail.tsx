@@ -3,7 +3,7 @@ import { AntDesign } from '@expo/vector-icons';
 import { useLocalSearchParams, useNavigation } from 'expo-router';
 import React, { useEffect, useState } from 'react';
 import { Alert, LayoutAnimation, Platform, ScrollView, StyleSheet, Text, TextInput, TextStyle, TouchableOpacity, UIManager, View, ViewStyle } from 'react-native';
-import { ItemDetailData, PlaylistProvider, usePlaylists } from '../drawer/contexts/PlaylistContext'; // PlaylistProvider もインポート
+import { ItemDetailData, PlaylistProvider, usePlaylists } from './drawer/contexts/PlaylistContext'; // PlaylistProvider もインポート
 
 if (Platform.OS === 'android' && UIManager.setLayoutAnimationEnabledExperimental) {
   UIManager.setLayoutAnimationEnabledExperimental(true);

@@ -2,7 +2,7 @@
 import { useLocalSearchParams, useNavigation } from 'expo-router';
 import React, { useEffect, useState } from 'react';
 import { ScrollView, StyleSheet, Text, TextStyle, TouchableOpacity, View, ViewStyle } from 'react-native';
-import { RecipeItem, RecipeProvider, useRecipes } from '../drawer/contexts/RecipeContext'; // RecipeContext.tsx から useRecipes と RecipeItem をインポート
+import { RecipeItem, RecipeProvider, useRecipes } from './drawer/contexts/RecipeContext'; // RecipeContext.tsx から useRecipes と RecipeItem をインポート
 
 const RecipeDetailModal: React.FC = () => {
   const { recipeId, recipeTitle } = useLocalSearchParams<{ recipeId: string; recipeTitle: string }>();
