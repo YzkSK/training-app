@@ -1,5 +1,5 @@
 // app/drawer/tabs/recipe.tsx
-import FloatingActionButton from '@/components/FloatingActionButton';
+import FloatingActionButton from '@/components/Fitnessfab';
 import type { NavigationProp } from '@react-navigation/native'; // 型定義をインポート
 import { router, useNavigation } from 'expo-router'; // useNavigation をインポート
 import React from 'react';
