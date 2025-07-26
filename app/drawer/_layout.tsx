@@ -8,7 +8,7 @@ export default function Layout() {
         ヘッダーに正しいタイトルが表示されるようになります。
       */}
       <Drawer.Screen
-        name="(tabs)" // (tabs) ディレクトリを指します
+        name="tabs" // (tabs) ディレクトリを指します
         options={{
           title: 'メイン画面', // ヘッダーに表示されるタイトル
         }}
@@ -17,6 +17,12 @@ export default function Layout() {
         name="profile" // app/profile.tsx (もし存在すれば)
         options={{
           title: 'プロフィール',
+        }}
+      />
+      <Drawer.Screen
+        name="planning" // app/planning.tsx (もし存在すれば)
+        options={{
+          title: 'トレーニングセット',
         }}
       />
     </Drawer>
