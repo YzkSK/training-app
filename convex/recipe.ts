@@ -4,10 +4,10 @@ import { mutation, query } from "./_generated/server";
 // 新しい食事記録を追加する
 export const add = mutation({
     args: {
-        date: v.number(),
-        time: v.string(),
-        menu: v.string(),
-        kcal: v.number(),
+        name: v.string(), // レシピ名
+        ingredients: v.array(v.string()), // 材料のリスト
+        instructions: v.string(), // 調理手順
+        memo: v.optional(v.string()), // メモ（オプション）
     },
     handler: async (ctx, args) => {
         const identity = await ctx.auth.getUserIdentity();
@@ -15,7 +15,6 @@ export const add = mutation({
             throw new Error("ユーザーが認証されていません。");
         }
 
-        // ▼▼▼▼ ここから追加 ▼▼▼▼
         // Clerk IDを使って、usersテーブルからユーザー情報を検索
         const user = await ctx.db
             .query("users")
@@ -26,12 +25,9 @@ export const add = mutation({
         if (!user) {
             throw new Error("ユーザーがデータベースに見つかりません。");
         }
-        // ▲▲▲▲ ここまで追加 ▲▲▲▲
 
-        await ctx.db.insert("f_data", {
-            // ▼▼▼▼ ここを修正 ▼▼▼▼
+        await ctx.db.insert("recipe", {
             userId: user._id, // 取得したConvexのユーザーIDを使う
-            // ▲▲▲▲ ここを修正 ▲▲▲▲
             ...args,
         });
     },
@@ -45,7 +41,6 @@ export const list = query({
             return [];
         }
 
-        // ▼▼▼▼ ここから追加 ▼▼▼▼
         // Clerk IDを使って、usersテーブルからユーザー情報を検索
         const user = await ctx.db
             .query("users")
@@ -56,13 +51,10 @@ export const list = query({
         if (!user) {
             return [];
         }
-        // ▲▲▲▲ ここまで追加 ▲▲▲▲
 
         return await ctx.db
-            .query("f_data")
-            // ▼▼▼▼ ここを修正 ▼▼▼▼
+            .query("recipe")
             .withIndex("by_userId", (q) => q.eq("userId", user._id)) // 取得したConvexのユーザーIDで絞り込む
-            // ▲▲▲▲ ここを修正 ▲▲▲▲
             .order("desc") // 新しい順に並び替え
             .collect();
     },

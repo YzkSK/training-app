@@ -4,10 +4,11 @@ import { mutation, query } from "./_generated/server";
 // 新しいトレーニング記録を追加する
 export const add = mutation({
     args: {
-        date: v.number(),
-        menu: v.string(),
-        time_or_count: v.string(),
-        kcal_cons: v.number(),
+        date: v.string(),
+        exercise: v.string(), // 例: "ベンチプレス", "デッドリフト"
+        weight: v.number(), // 使用した重量
+        reps: v.number(), // 繰り返し回数
+        sets: v.number(), // セット数
     },
     handler: async (ctx, args) => {
         const identity = await ctx.auth.getUserIdentity();
@@ -15,7 +16,6 @@ export const add = mutation({
             throw new Error("ユーザーが認証されていません。");
         }
 
-        // ▼▼▼▼ ここから追加 ▼▼▼▼
         // Clerk IDを使って、usersテーブルからユーザー情報を検索
         const user = await ctx.db
             .query("users")
@@ -26,12 +26,9 @@ export const add = mutation({
         if (!user) {
             throw new Error("ユーザーがデータベースに見つかりません。");
         }
-        // ▲▲▲▲ ここまで追加 ▲▲▲▲
 
-        await ctx.db.insert("t_data", {
-            // ▼▼▼▼ ここを修正 ▼▼▼▼
+        await ctx.db.insert("w_training", {
             userId: user._id, // 取得したConvexのユーザーIDを使う
-            // ▲▲▲▲ ここを修正 ▲▲▲▲
             ...args,
         });
     },
@@ -45,7 +42,6 @@ export const list = query({
             return [];
         }
 
-        // ▼▼▼▼ ここから追加 ▼▼▼▼
         // Clerk IDを使って、usersテーブルからユーザー情報を検索
         const user = await ctx.db
             .query("users")
@@ -56,13 +52,10 @@ export const list = query({
         if (!user) {
             return [];
         }
-        // ▲▲▲▲ ここまで追加 ▲▲▲▲
 
         return await ctx.db
-            .query("t_data")
-            // ▼▼▼▼ ここを修正 ▼▼▼▼
+            .query("w_training")
             .withIndex("by_userId", (q) => q.eq("userId", user._id)) // 取得したConvexのユーザーIDで絞り込む
-            // ▲▲▲▲ ここを修正 ▲▲▲▲
             .order("desc") // 新しい順に並び替え
             .collect();
     },
