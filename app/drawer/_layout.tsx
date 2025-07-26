@@ -1,46 +1,44 @@
+// app/drawer/_layout.tsx (修正後 - PlaylistProvider を削除)
+import { ModeProvider } from '@/contexts/ModeContext';
 import { Drawer } from 'expo-router/drawer';
+import { PlaylistProvider } from './contexts/PlaylistContext';
+// import { PlaylistProvider } from './contexts/PlaylistContext'; // ★ この行を削除
 
 export default function Layout() {
   return (
+    <ModeProvider>
+    <PlaylistProvider>
     <Drawer>
-      {/* (tabs)グループをDrawerのスクリーンとして定義します。
-          これにより、タブナビゲーションがドロワーメニューからアクセスできるようになります。
-          headerShown: false を設定しないことで、Drawerが自動的にヘッダーとハンバーガーアイコンを提供します。
-      */}
       <Drawer.Screen
         name="tabs"
         options={{
-          title: 'メイン', // ドロワーメニューに表示されるタイトル
+          title: 'メイン',
         }}
       />
 
-      {/* ドロワーに直接追加したいスクリーンのみをここに記述します。
-          これにより、profile.tsx のみがドロワーメニューに表示され、
-          他のルートファイル（例: index.tsx, components/FloatingActionButton.tsxなど）は表示されなくなります。
+      <Drawer.Screen
+        name="profile"
+        options={{
+          title: 'プロフィール',
+        }}
+      />
+
+      {/* PlaylistList はfitness.tsxが担うが、Drawerメニューに表示したい場合は残す。
+          ただし、このルート名が app/_layout.tsx にもなければナビゲーションエラーになる。
       */}
       <Drawer.Screen
-        name="profile" // app/profile.tsx (存在しない場合は作成してください)
+        name="PlaylistList"
         options={{
-          title: 'プロフィール', // ドロワーメニューに表示されるタイトル
+          title: 'マイ再生リスト',
         }}
       />
-      <Drawer.Screen
-        name="index"
-        redirect={true} // app/index.tsx (存在しない場合は作成してください)
-      />
-      <Drawer.Screen
-        name="components/FloatingActionButton"
-        redirect={true} // app/components/FloatingActionButton.tsx (存在しない場合は作成してください)
-      />
-      <Drawer.Screen
-        name="add-fitness"
-        redirect={true} 
-      />
-      <Drawer.Screen
-        name="add-recipe"
-        redirect={true} 
-      />
-    </Drawer>
 
+      <Drawer.Screen name="index" redirect={true} />
+      <Drawer.Screen name="components/FloatingActionButton" redirect={true} />
+      <Drawer.Screen name="diet/add-fitness" redirect={true} />
+      <Drawer.Screen name="diet/add-recipe" redirect={true} />
+    </Drawer>
+    </PlaylistProvider>
+    </ModeProvider>
   );
 }
