@@ -1,37 +1,38 @@
-import { Ionicons } from '@expo/vector-icons';
+// app/drawer/_layout.tsx (修正後 - PlaylistProvider を削除)
 import { Drawer } from 'expo-router/drawer';
+import { ModeProvider } from './contexts/ModeContext';
+import { PlaylistProvider } from './contexts/PlaylistContext';
 
 export default function Layout() {
   return (
-    <Drawer>
-      <Drawer.Screen
-        name="tabs" // メインのタブ画面
-        options={{
-          title: 'トレーニング記録',
-          drawerIcon: ({ size, color }) => (
-            <Ionicons name="barbell-outline" size={size} color={color} />
-          ),
-        }}
-      />
-      <Drawer.Screen
-        // `planning.tsx` を指すように設定
-        name="planning" 
-        options={{
-          title: 'トレーニングプラン',
-          drawerIcon: ({ size, color }) => (
-            <Ionicons name="document-text-outline" size={size} color={color} />
-          ),
-        }}
-      />
-      <Drawer.Screen
-        name="profile" // プロフィール画面 (もし存在すれば)
-        options={{
-          title: 'プロフィール',
-           drawerIcon: ({ size, color }) => (
-            <Ionicons name="person-outline" size={size} color={color} />
-          ),
-        }}
-      />
-    </Drawer>
+    <ModeProvider>
+      <PlaylistProvider>
+        <Drawer>
+          <Drawer.Screen
+            name="tabs"
+            options={{
+              title: 'メイン',
+            }}
+          />
+          <Drawer.Screen
+            name="profile"
+            options={{
+              title: 'プロフィール',
+            }}
+          />
+          <Drawer.Screen
+            name="PlaylistList"
+            options={{
+              title: 'マイ再生リスト',
+            }}
+          />
+
+          <Drawer.Screen name="index" redirect={true} />
+          <Drawer.Screen name="components/FloatingActionButton" redirect={true} />
+          <Drawer.Screen name="diet/add-fitness" redirect={true} />
+          <Drawer.Screen name="diet/add-recipe" redirect={true} />
+        </Drawer>
+      </PlaylistProvider>
+    </ModeProvider>
   );
 }

@@ -1,40 +1,62 @@
-import { Stack } from 'expo-router';
+import { ClerkLoaded, ClerkProvider, useAuth } from '@clerk/clerk-expo';
+import { ConvexReactClient } from 'convex/react';
+import { ConvexProviderWithClerk } from "convex/react-clerk";
+import { Slot } from 'expo-router';
+import * as SecureStore from 'expo-secure-store';
+import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
+import { TamaguiProvider } from 'tamagui';
+import { tamaguiConfig } from '../tamagui.config';
 
-export default function Layout() {
-  return (
-    // アプリケーションのルートにStackナビゲーターを配置します。
-    // これにより、すべての画面がこのスタックの一部として管理されます。
-    <Stack>
-      {/* ドロワーナビゲーター全体をStackのスクリーンとして定義します。
-          これにより、ドロワー内のすべての画面がスタックナビゲーションの一部になります。
-          headerShown: false に設定することで、ドロワー自身がヘッダーを管理します。
-          この '(drawer)' は、app/(drawer) フォルダ内の _layout.tsx を参照します。
-      */}
-      <Stack.Screen
-        name="drawer"
-        options={{ headerShown: false }} // ドロワーのヘッダーを非表示にする
-      />
+const publishableKey = process.env.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY!;
+const convex = new ConvexReactClient(process.env.EXPO_PUBLIC_CONVEX_URL!);
 
-      {/* ドロワーには表示されないが、フローティングアクションボタンから遷移させたい画面を
-          Stackの直接の子として定義します。これにより、router.push() でアクセス可能になります。
-      */}
-      <Stack.Screen
-        name="add-fitness" // app/add-fitness.tsx
-        options={{
-          title: '運動項目追加',
-          headerShown: false, // 画面のタイトル
-          presentation: 'modal', // モーダル表示にする場合は 'modal' を使用
-        }}
-      />
-      <Stack.Screen
-        name="nutrition-plan" // app/nutrition-plan.tsx
-        options={{
-          title: '栄養プラン',
-          headerShown: false, // 画面のタイトル
-          presentation: 'modal', // モーダル表示にする場合は 'modal' を使用
-        }}
-      />
-      {/* その他のルートレベルのスクリーンがあればここに追加します */}
-    </Stack>
-  );
+if (!publishableKey) {
+    throw new Error('EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY is not set');
+}
+
+if (!convex) {
+    throw new Error('EXPO_PUBLIC_CONVEX_URL is not set');
+}
+
+const tokenCache = {
+    async getToken(key: string) {
+        try {
+            const item = await SecureStore.getItemAsync(key)
+            if (item) {
+                console.log(`${key} was used \n`)
+            } else {
+                console.log('No values stored under key: ' + key)
+            }
+        } catch (error) {
+            console.error('SecureStore get item error: ', error)
+            await SecureStore.deleteItemAsync(key)
+            return null;
+        }
+    },
+    async saveToken(key: string, value: string) {
+        try {
+            return SecureStore.setItemAsync(key, value)
+        } catch (error) {
+            console.error('SecureStore save item error: ', error)
+            return
+        }
+    },
+}
+
+export default function RootLayout() {
+    const insets = useSafeAreaInsets();
+
+    return (
+        <ClerkProvider tokenCache={tokenCache} publishableKey={publishableKey}>
+            <ClerkLoaded>
+                <ConvexProviderWithClerk useAuth={useAuth} client={convex}>
+                    <TamaguiProvider config={tamaguiConfig}>
+                        <SafeAreaView style={{ flex: 1, paddingTop: insets.top - 60 }} edges={['right', 'left', 'top']}>
+                            <Slot />
+                        </SafeAreaView>
+                    </TamaguiProvider>
+                </ConvexProviderWithClerk>
+            </ClerkLoaded>
+        </ClerkProvider>
+    )
 }
