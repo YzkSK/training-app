@@ -7,9 +7,8 @@ import { internalMutation, query } from "./_generated/server";
 export const create = internalMutation({
     args: {
         clerkId: v.string(),
-        email: v.optional(v.string()),
-        name: v.optional(v.string()),
-        imageUrl: v.optional(v.string()),
+        email: v.string(),
+        username: v.optional(v.string()),
     },
     handler: async (ctx, args) => {
         // 既存のユーザーがいないか確認（念のため）
@@ -24,14 +23,14 @@ export const create = internalMutation({
         }
 
         // usersテーブルに新しいドキュメントを挿入
-        await ctx.db.insert("users", {
-        clerkId: args.clerkId,
-        email: args.email,
-        name: args.name,
-        imageUrl: args.imageUrl,
+        const userId = await ctx.db.insert("users", {
+            clerkId: args.clerkId,
+            email: args.email,
+            username: args.username ?? "",
         });
+        return userId;
     },
-    });
+});
 
     /**
      * ログイン中のユーザー情報を取得するクエリ。
