@@ -9,7 +9,9 @@ export const addOrUpdate = mutation({
         height: v.number(),
         weight: v.number(),
         move_level: v.union(v.literal(0), v.literal(1), v.literal(2), v.literal(3), v.literal(4), v.literal(5)),
+        mode: v.union(v.literal("trainer"), v.literal("dieter")), // トレーニングモード
     },
+
     handler: async (ctx, args) => {
         const identity = await ctx.auth.getUserIdentity();
         if (!identity) {
