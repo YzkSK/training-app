@@ -19,25 +19,24 @@ export default function Layout() {
           }}
         />
 
-        <Tabs.Screen
-          name="recipe"
-          options={{
-            title: 'recipe',
-            tabBarIcon: ({ color, size }) => (
-              <FontAwesome6 name="utensils" size={size} color={color} />
-            ),
-            headerShown: false, // ドロワーのヘッダーを非表示にする
-          }}
-        />
-
-        <Tabs.Screen
-          name="PlaylistDetail"
-          options={{
-            title: 'マイ再生リスト',
-            headerShown: false, // ドロワーのヘッダーを非表示にする
-            href: null, // この画面は fitness.tsx が担うため、href を null に設定
-          }}
-        />
+      <Tabs.Screen
+        name="recipe"
+        options={{
+          title: 'recipe',
+          tabBarIcon: ({ color, size }) => (
+            <FontAwesome6 name="utensils" size={size} color={color} />
+          ),
+          headerShown: false, // ドロワーのヘッダーを非表示にする
+        }}
+      />
+      <Tabs.Screen
+        name="PlaylistDetail"
+        options={{
+          title: 'マイ再生リスト',
+          headerShown: false, // ドロワーのヘッダーを非表示にする
+          href: null, // この画面は fitness.tsx が担うため、href を null に設定
+        }}
+      />
 
         <Tabs.Screen
           name="RecipeDetail"
