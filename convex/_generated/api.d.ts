@@ -13,7 +13,7 @@ import type {
   FilterApi,
   FunctionReference,
 } from "convex/server";
-import type * as http from ".../http.js
+import type * as http from "../http.js";
 import type * as personal from "../personal.js";
 import type * as recipe from "../recipe.js";
 import type * as t_menu from "../t_menu.js";
