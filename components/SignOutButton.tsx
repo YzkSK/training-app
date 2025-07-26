@@ -1,7 +1,8 @@
 import { useClerk } from '@clerk/clerk-expo'
 import { useRouter } from 'expo-router'
-import React from 'react'
-import { Text, TouchableOpacity } from 'react-native'
+import { Text } from 'react-native'
+import { Button } from 'tamagui'
+
 
 export const SignOutButton = () => {
   // Use `useClerk()` to access the `signOut()` function
@@ -21,8 +22,13 @@ export const SignOutButton = () => {
   }
 
   return (
-    <TouchableOpacity onPress={handleSignOut}>
+    <Button onPress={handleSignOut} style={{
+          width: '80%',
+          marginBottom: 10,
+          backgroundColor: 'darkgray',
+          color: 'black',
+        }}>
       <Text>Sign out</Text>
-    </TouchableOpacity>
+    </Button>
   )
 }

@@ -34,7 +34,7 @@ const FloatingActionButton: React.FC<FloatingActionButtonProps> = () => {
             labelStyle: { color: 'black' },
             onPress: () => {
               console.log('運動項目追加を押しました');
-              router.push('/add-fitness'); // 新しい運動項目追加画面へ遷移
+              router.push('../../add-training'); // 新しい運動項目追加画面へ遷移
             },
           },
           {
@@ -43,7 +43,7 @@ const FloatingActionButton: React.FC<FloatingActionButtonProps> = () => {
             labelStyle: { color: 'black' }, // ラベルの色を黒に設定
             onPress: () => {
               console.log('栄養素計算、食事提案を押しました');
-              router.push('/nutrition-plan'); // 新しい栄養プラン画面へ遷移
+              router.push('../../nutrition-plan'); // 新しい栄養プラン画面へ遷移
             },
           },
         ]}

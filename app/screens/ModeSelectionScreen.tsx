@@ -2,7 +2,7 @@
 import { Ionicons } from '@expo/vector-icons'; // ★ここを追加・修正
 import { useRouter } from 'expo-router'; // ★ここを追加・修正
 import { Alert, StyleSheet, Text, TouchableOpacity, View } from 'react-native'; // ★ここを追加・修正
-import { useMode } from '../drawer/contexts/ModeContext'; // ★ここを追加・修正 (パスは app/screens から app/contexts への相対パス)
+import { useMode } from '../diet/drawer/contexts/ModeContext'; // ★ここを追加・修正 (パスは app/screens から app/contexts への相対パス)
 
 export default function ModeSelectionScreen() {
     const { setAndStoreMode } = useMode();
@@ -11,7 +11,7 @@ export default function ModeSelectionScreen() {
     const selectMode = async (mode: 'trainer' | 'dieter') => {
         await setAndStoreMode(mode);
         Alert.alert("モード選択", `${mode === 'trainer' ? 'トレーニー' : 'ダイエッター'}モードが選択されました！`);
-        router.replace('/home');
+        router.replace('/');
     };
 
     return (

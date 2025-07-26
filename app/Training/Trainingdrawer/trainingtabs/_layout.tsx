@@ -11,7 +11,7 @@ export default function TabLayout() {
       <Portal.Host>
         <Tabs screenOptions={{ tabBarActiveTintColor: 'blue' }}>
           <Tabs.Screen
-            name="Weight Training"
+            name="weight-training"
             options={{
               title: 'Weight Training',
               headerShown: false, // ヘッダーを非表示にする
@@ -20,7 +20,7 @@ export default function TabLayout() {
         />
 
           <Tabs.Screen
-            name="BodyWeight Training"
+            name="bodyweight-training"
             options={{
               title: 'Bodyweight Training',
               headerShown: false, // ヘッダーを非表示にする

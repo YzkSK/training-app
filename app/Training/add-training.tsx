@@ -2,7 +2,7 @@
 import { Ionicons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useLocalSearchParams, useRouter } from 'expo-router'; // useLocalSearchParams をインポート
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Alert, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { Button, TextInput } from 'react-native-paper';
 
@@ -142,7 +142,6 @@ export default function AddTrainingScreen() {
         <TextInput label="回数 (Reps)" value={reps} onChangeText={setReps} mode="outlined" keyboardType="numeric" style={styles.input} placeholder="例: 10" />
         <TextInput label="セット数 (Sets)" value={sets} onChangeText={setSets} mode="outlined" keyboardType="numeric" style={styles.input} placeholder="例: 3" />
         <TextInput label="メモ (任意)" value={notes} onChangeText={setNotes} mode="outlined" multiline numberOfLines={3} style={styles.inputMultiline} placeholder="例: フォームに気をつけた" />
-        
         <Button mode="contained" onPress={handleSaveTraining} style={styles.saveButton} labelStyle={styles.buttonLabel}>
           トレーニングを保存
         </Button>

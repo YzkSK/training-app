@@ -14,7 +14,7 @@ import {
     View,
     ViewStyle,
 } from 'react-native';
-import { usePlaylists } from '../app/drawer/contexts/PlaylistContext'; // Contextをインポート
+import { usePlaylists } from '../app/diet/drawer/contexts/PlaylistContext'; // Contextをインポート
 
 // ListItemコンポーネントのPropsの型定義（変更なし）
 interface ListItemProps {

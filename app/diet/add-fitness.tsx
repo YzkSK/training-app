@@ -4,20 +4,20 @@ import { AntDesign } from '@expo/vector-icons';
 import { useNavigation } from 'expo-router';
 import React, { useState } from 'react';
 import {
-  Alert, Modal,
-  Platform,
-  SafeAreaView,
-  ScrollView,
-  StatusBar,
-  StyleSheet,
-  Text,
-  TextInput, TextStyle,
-  TouchableOpacity,
-  View,
-  ViewStyle
+    Alert, Modal,
+    Platform,
+    SafeAreaView,
+    ScrollView,
+    StatusBar,
+    StyleSheet,
+    Text,
+    TextInput, TextStyle,
+    TouchableOpacity,
+    View,
+    ViewStyle
 } from 'react-native';
 
-import { ItemDetailData, PlaylistProvider, usePlaylists } from '../drawer/contexts/PlaylistContext';
+import { ItemDetailData, PlaylistProvider, usePlaylists } from './drawer/contexts/PlaylistContext';
 
 // ListItemコンポーネントのPropsの型定義
 interface ListItemProps {
