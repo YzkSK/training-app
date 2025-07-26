@@ -1,28 +1,35 @@
+import { Ionicons } from '@expo/vector-icons';
 import { Drawer } from 'expo-router/drawer';
 
 export default function Layout() {
   return (
     <Drawer>
-      {/* nameを "index" から "(tabs)" に変更しました。
-        これにより、(tabs) ディレクトリ全体がドロワーの一画面として扱われ、
-        ヘッダーに正しいタイトルが表示されるようになります。
-      */}
       <Drawer.Screen
-        name="tabs" // (tabs) ディレクトリを指します
+        name="tabs" // メインのタブ画面
         options={{
-          title: 'メイン画面', // ヘッダーに表示されるタイトル
+          title: 'トレーニング記録',
+          drawerIcon: ({ size, color }) => (
+            <Ionicons name="barbell-outline" size={size} color={color} />
+          ),
         }}
       />
       <Drawer.Screen
-        name="profile" // app/profile.tsx (もし存在すれば)
+        // `planning.tsx` を指すように設定
+        name="planning" 
+        options={{
+          title: 'トレーニングプラン',
+          drawerIcon: ({ size, color }) => (
+            <Ionicons name="document-text-outline" size={size} color={color} />
+          ),
+        }}
+      />
+      <Drawer.Screen
+        name="profile" // プロフィール画面 (もし存在すれば)
         options={{
           title: 'プロフィール',
-        }}
-      />
-      <Drawer.Screen
-        name="planning" // app/planning.tsx (もし存在すれば)
-        options={{
-          title: 'トレーニングセット',
+           drawerIcon: ({ size, color }) => (
+            <Ionicons name="person-outline" size={size} color={color} />
+          ),
         }}
       />
     </Drawer>
