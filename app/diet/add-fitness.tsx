@@ -19,6 +19,8 @@ import {
 
 import { ItemDetailData, PlaylistProvider, usePlaylists } from './drawer/contexts/PlaylistContext';
 
+
+
 // ListItemコンポーネントのPropsの型定義
 interface ListItemProps {
   id: string;

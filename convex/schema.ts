@@ -15,38 +15,39 @@ export default defineSchema({
     .index("by_email", ["email"]),
 
     // ユーザーのプロフィール情報
-    personal: defineTable({
-        userId: v.id("users"), // ConvexのusersテーブルのIDを紐付ける
-        gender: v.union(v.literal("男性"), v.literal("女性"), v.literal("その他")),
-        age: v.number(),
-        height: v.number(),
-        weight: v.number(),
-        move_level: v.union(v.literal(0), v.literal(1), v.literal(2), v.literal(3), v.literal(4), v.literal(5)), // 運動レベル
-    })
-    // userIdをユニークにする（1ユーザーにつき1プロフィール）インデックス
-    .index("by_userId", ["userId"]),
+    personal: defineTable({ // ★ ここを 'personal' に変更
+    userId: v.id("users"), // 'users'テーブルの_idに紐付け
+    gender: v.union(v.literal("男性"), v.literal("女性"), v.literal("その他")), // 日本語リテラルに合わせる
+    age: v.number(), // number型に合わせる
+    height: v.number(), // number型に合わせる
+    weight: v.number(), // number型に合わせる
+    move_level: v.union(v.literal(0), v.literal(1), v.literal(2), v.literal(3), v.literal(4), v.literal(5)), // number型に合わせる
+  }).index("by_userId", ["userId"]), // userIdでプロフィールを検索するためのインデックス
 
-    //自重トレーニングの記録
-    bw_training: defineTable({
-        userId: v.id("users"), // ConvexのusersテーブルのIDを紐付ける
-        date: v.string(),
-        exercise: v.string(), // 例: "プッシュアップ", "スクワット"
-        reps: v.number(), // 繰り返し回数
-        sets: v.number(), // セット数
-    })
-    .index("by_userId", ["userId"]),
-
-    //器具トレーニング
+    // ウエイトトレーニング記録テーブル
     w_training: defineTable({
-        userId: v.id("users"), // ConvexのusersテーブルのIDを紐付ける
-        date: v.string(),
-        exercise: v.string(), // 例: "ベンチプレス", "デッドリフト"
+        userId: v.id("users"), // ユーザーへの参照
+        date: v.string(), // 記録日 (YYYY-MM-DD形式)
+        exercise: v.string(), // トレーニング名 (例: "ベンチプレス")
         weight: v.number(), // 使用した重量
         reps: v.number(), // 繰り返し回数
         sets: v.number(), // セット数
+        notes: v.optional(v.string()), // メモ (オプション)
     })
-    .index("by_userId", ["userId"]),
+        .index("by_userId", ["userId"])
+        .index("by_userId_and_date", ["userId", "date"]), // ユーザーと日付で複合インデックス
 
+    // 自重トレーニング記録テーブル
+    bw_training: defineTable({
+        userId: v.id("users"), // ユーザーへの参照
+        date: v.string(), // 記録日 (YYYY-MM-DD形式)
+        exercise: v.string(), // トレーニング名 (例: "プッシュアップ")
+        reps: v.number(), // 繰り返し回数
+        sets: v.number(), // セット数
+        notes: v.optional(v.string()), // メモ (オプション)
+    })
+    .index("by_userId", ["userId"])
+    .index("by_userId_and_date", ["userId", "date"]),
     // レシピ情報
     recipe: defineTable({
         userId: v.id("users"), // ConvexのusersテーブルのIDを紐付ける
