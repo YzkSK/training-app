@@ -1,3 +1,4 @@
+// convex/personal.ts
 import { v } from "convex/values";
 import { mutation, query } from "./_generated/server";
 
@@ -8,6 +9,7 @@ export const addOrUpdate = mutation({
         age: v.number(),
         height: v.number(),
         weight: v.number(),
+        move_level: v.union(v.literal(0), v.literal(1), v.literal(2), v.literal(3), v.literal(4), v.literal(5)), // 運動レベル
     },
 
     handler: async (ctx, args) => {
@@ -28,7 +30,7 @@ export const addOrUpdate = mutation({
 
         // 既存の身体データがあるか確認
         const existingPData = await ctx.db
-            .query("personal")
+            .query("personal") // ★ スキーマで定義するテーブル名と一致させる
             .withIndex("by_userId", (q) => q.eq("userId", user._id)) // 正しいユーザーIDで検索
             .first();
 
@@ -37,7 +39,7 @@ export const addOrUpdate = mutation({
             await ctx.db.patch(existingPData._id, args);
         } else {
             // なければ新規作成
-            await ctx.db.insert("personal", {
+            await ctx.db.insert("personal", { // ★ スキーマで定義するテーブル名と一致させる
                 userId: user._id,
                 ...args,
             });
@@ -64,7 +66,7 @@ export const get = query({
         }
 
         return await ctx.db
-            .query("personal")
+            .query("personal") // ★ スキーマで定義するテーブル名と一致させる
             .withIndex("by_userId", (q) => q.eq("userId", user._id)) // 正しいユーザーIDで検索
             .first();
     },
