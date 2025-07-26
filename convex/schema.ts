@@ -1,6 +1,5 @@
 import { defineSchema, defineTable } from "convex/server";
 import { v } from "convex/values";
-import { memo, use } from "react";
 
 export default defineSchema({
     // ユーザー情報 (Clerkと連携)
@@ -29,21 +28,23 @@ export default defineSchema({
     //自重トレーニングの記録
     bw_training: defineTable({
         userId: v.id("users"), // ConvexのusersテーブルのIDを紐付ける
-        date: v.date(),
+        date: v.string(),
         exercise: v.string(), // 例: "プッシュアップ", "スクワット"
         reps: v.number(), // 繰り返し回数
         sets: v.number(), // セット数
-    }),
+    })
+    .index("by_userId", ["userId"]),
 
     //器具トレーニング
     w_training: defineTable({
         userId: v.id("users"), // ConvexのusersテーブルのIDを紐付ける
-        date: v.date(),
+        date: v.string(),
         exercise: v.string(), // 例: "ベンチプレス", "デッドリフト"
         weight: v.number(), // 使用した重量
         reps: v.number(), // 繰り返し回数
         sets: v.number(), // セット数
-    }),
+    })
+    .index("by_userId", ["userId"]),
 
     // レシピ情報
     recipe: defineTable({
@@ -52,17 +53,19 @@ export default defineSchema({
         ingredients: v.array(v.string()), // 材料のリスト
         instructions: v.string(), // 調理手順
         memo: v.optional(v.string()), // メモ（オプション）
-    }),
+    })
+    .index("by_userId", ["userId"]),
 
     //ダイエッター向けトレーニング
     t_menu: defineTable({
         userId: v.id("users"), // ConvexのusersテーブルのIDを紐付ける
-        date: v.date(), // トレーニング日
+        date: v.string(), // トレーニング日
         exercise: v.string(), // 例: "ランニング", "サイクリング"
         duration: v.optional(v.number()), // 時間（分単位）
         reps: v.optional(v.number()), // 回数
         caloriesBurned: v.number(), // 消費カロリー
-    }),
+    })
+    .index("by_userId", ["userId"]),
 
     //トレーニングリスト
     t_playlist: defineTable({
@@ -70,5 +73,6 @@ export default defineSchema({
         title: v.string(), // プレイリスト名
         menu: v.array(v.string()), // トレーニングの名前
         baseCalories: v.array(v.number()), // 基本消費カロリー
-    }),
+    })
+    .index("by_userId", ["userId"]),
 });

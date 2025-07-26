@@ -4,12 +4,11 @@ import { mutation, query } from "./_generated/server";
 // 新しいトレーニング動画の記録を追加する
 export const add = mutation({
     args: {
-        // ▼▼▼▼ ここを修正 ▼▼▼▼
-        training_name: v.string(), // "traning_name" -> "training_name" に修正
-        // ▲▲▲▲ ここを修正 ▲▲▲▲
-        video_url: v.string(),
-        count: v.number(),
-        kcal_cons: v.number(),
+        date: v.string(), // トレーニング日
+        exercise: v.string(), // 例: "ランニング", "サイクリング"
+        duration: v.optional(v.number()), // 時間（分単位）
+        reps: v.optional(v.number()), // 回数
+        caloriesBurned: v.number(), // 消費カロリー
     },
     handler: async (ctx, args) => {
         const identity = await ctx.auth.getUserIdentity();
@@ -26,18 +25,15 @@ export const add = mutation({
             throw new Error("ユーザーがデータベースに見つかりません。");
         }
 
-        // ▼▼▼▼ ここを修正 ▼▼▼▼
-        // データベースに新しい記録を挿入
-        // 構文エラーを修正し、シンプルな形にしました
-        await ctx.db.insert("t_video", {
+        // データベースに新しいリストを挿入
+        await ctx.db.insert("t_menu", {
             userId: user._id, // ログインユーザーのIDを紐付ける
             ...args, // argsをそのまま展開する
         });
-        // ▲▲▲▲ ここを修正 ▲▲▲▲
     },
-}); // ← add ミューテーションはここで正しく閉じる
+});
 
-// ログイン中のユーザーのトレーニング動画記録を一覧で取得する
+// ログイン中のユーザーのトレーニング記録を一覧で取得する
 export const list = query({
     handler: async (ctx) => {
         const identity = await ctx.auth.getUserIdentity();
@@ -55,7 +51,7 @@ export const list = query({
         }
 
         return await ctx.db
-            .query("t_video")
+            .query("t_menu")
             .withIndex("by_userId", (q) => q.eq("userId", user._id))
             .order("desc")
             .collect();

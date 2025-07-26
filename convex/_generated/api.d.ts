@@ -13,10 +13,12 @@ import type {
   FilterApi,
   FunctionReference,
 } from "convex/server";
-import type * as http from ".../http.js
+import type * as contexts_ModeContext from "../contexts/ModeContext.js";
+import type * as http from "../http.js";
 import type * as personal from "../personal.js";
 import type * as recipe from "../recipe.js";
 import type * as t_menu from "../t_menu.js";
+import type * as t_playlist from "../t_playlist.js";
 import type * as users from "../users.js";
 import type * as w_training from "../w_training.js";
 
@@ -29,10 +31,12 @@ import type * as w_training from "../w_training.js";
  * ```
  */
 declare const fullApi: ApiFromModules<{
+  "contexts/ModeContext": typeof contexts_ModeContext;
   http: typeof http;
   personal: typeof personal;
   recipe: typeof recipe;
   t_menu: typeof t_menu;
+  t_playlist: typeof t_playlist;
   users: typeof users;
   w_training: typeof w_training;
 }>;
