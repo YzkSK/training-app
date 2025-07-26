@@ -24,16 +24,16 @@ export default function Index() {
         return (
             <YStack style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
                 <Text>User not found.</Text>
-                <Button>
-                    <Link href="/auth/signUp">
+                <Link href="/auth/signUp">
+                    <Button>
                         <Text>Sign up</Text>
-                    </Link>
-                </Button>
-                <Button>
-                    <Link href="/auth/signIn">
+                    </Button>
+                </Link>
+                <Link href="/auth/signIn">
+                    <Button>
                         <Text>Sign in</Text>
-                    </Link>
-                </Button>
+                    </Button>
+                </Link>
             </YStack>
         );
     }
