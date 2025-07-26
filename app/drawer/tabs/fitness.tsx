@@ -1,6 +1,6 @@
 // app/drawer/tabs/fitness.tsx (修正後 - PlaylistProvider をコンポーネント内部でラップ)
 
-import FloatingActionButton from '@/components/FloatingActionButton';
+import FloatingActionButton from '@/components/Fitnessfab';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 import React from 'react';
 import { Platform, SafeAreaView, ScrollView, StatusBar, StyleSheet, Text, TextStyle, TouchableOpacity, View, ViewStyle } from 'react-native';

@@ -16,7 +16,6 @@ export const addOrUpdate = mutation({
             throw new Error("ユーザーが認証されていません。");
         }
 
-        // ▼▼▼▼ ここから追加 ▼▼▼▼
         // Clerk IDを使って、usersテーブルからConvexのユーザー情報を検索
         const user = await ctx.db
             .query("users")
@@ -26,14 +25,11 @@ export const addOrUpdate = mutation({
         if (!user) {
             throw new Error("ユーザーがデータベースに見つかりません。");
         }
-        // ▲▲▲▲ ここまで追加 ▲▲▲▲
 
         // 既存の身体データがあるか確認
         const existingPData = await ctx.db
-            .query("p_data")
-            // ▼▼▼▼ ここを修正 ▼▼▼▼
+            .query("personal")
             .withIndex("by_userId", (q) => q.eq("userId", user._id)) // 正しいユーザーIDで検索
-            // ▲▲▲▲ ここを修正 ▲▲▲▲
             .first();
 
         if (existingPData) {
@@ -41,10 +37,8 @@ export const addOrUpdate = mutation({
             await ctx.db.patch(existingPData._id, args);
         } else {
             // なければ新規作成
-            await ctx.db.insert("p_data", {
-                // ▼▼▼▼ ここを修正 ▼▼▼▼
-                userId: user._id, // 正しいユーザーIDで作成
-                // ▲▲▲▲ ここを修正 ▲▲▲▲
+            await ctx.db.insert("personal", {
+                userId: user._id,
                 ...args,
             });
         }
@@ -59,7 +53,6 @@ export const get = query({
             return null;
         }
 
-        // ▼▼▼▼ ここから追加 ▼▼▼▼
         // Clerk IDを使って、usersテーブルからConvexのユーザー情報を検索
         const user = await ctx.db
             .query("users")
@@ -69,13 +62,10 @@ export const get = query({
         if (!user) {
             return null; // ユーザーが見つからなければnullを返す
         }
-        // ▲▲▲▲ ここまで追加 ▲▲▲▲
 
         return await ctx.db
-            .query("p_data")
-            // ▼▼▼▼ ここを修正 ▼▼▼▼
+            .query("personal")
             .withIndex("by_userId", (q) => q.eq("userId", user._id)) // 正しいユーザーIDで検索
-            // ▲▲▲▲ ここを修正 ▲▲▲▲
             .first();
     },
 });

@@ -1,6 +1,6 @@
 // app/drawer/_layout.tsx (修正後 - PlaylistProvider を削除)
-import { ModeProvider } from '@/contexts/ModeContext';
 import { Drawer } from 'expo-router/drawer';
+import { ModeProvider } from './contexts/ModeContext';
 import { PlaylistProvider } from './contexts/PlaylistContext';
 
 export default function Layout() {
@@ -35,12 +35,12 @@ export default function Layout() {
         }}
       />
 
-      <Drawer.Screen name="index" redirect={true} />
-      <Drawer.Screen name="components/FloatingActionButton" redirect={true} />
-      <Drawer.Screen name="diet/add-fitness" redirect={true} />
-      <Drawer.Screen name="diet/add-recipe" redirect={true} />
-    </Drawer>
-    </PlaylistProvider>
+          <Drawer.Screen name="index" redirect={true} />
+          <Drawer.Screen name="components/FloatingActionButton" redirect={true} />
+          <Drawer.Screen name="diet/add-fitness" redirect={true} />
+          <Drawer.Screen name="diet/add-recipe" redirect={true} />
+        </Drawer>
+      </PlaylistProvider>
     </ModeProvider>
   );
 }
