@@ -1,5 +1,6 @@
 import { defineSchema, defineTable } from "convex/server";
 import { v } from "convex/values";
+import { memo, use } from "react";
 
 export default defineSchema({
     // ユーザー情報 (Clerkと連携)
@@ -14,7 +15,7 @@ export default defineSchema({
     .index("by_email", ["email"]),
 
     // ユーザーのプロフィール情報
-    p_data: defineTable({
+    personal: defineTable({
         userId: v.id("users"), // ConvexのusersテーブルのIDを紐付ける
         gender: v.union(v.literal("男性"), v.literal("女性"), v.literal("その他")),
         age: v.number(),
@@ -25,30 +26,49 @@ export default defineSchema({
     // userIdをユニークにする（1ユーザーにつき1プロフィール）インデックス
     .index("by_userId", ["userId"]),
 
-    // トレーニング記録
-    t_data: defineTable({
+    //自重トレーニングの記録
+    bw_training: defineTable({
         userId: v.id("users"), // ConvexのusersテーブルのIDを紐付ける
-        date: v.number(),
-        menu: v.string(),
-        time_or_count: v.string(),
-        kcal_cons: v.number(),
-    }).index("by_userId", ["userId"]),
+        date: v.date(),
+        exercise: v.string(), // 例: "プッシュアップ", "スクワット"
+        reps: v.number(), // 繰り返し回数
+        sets: v.number(), // セット数
+    }),
 
-    // 食事記録
-    f_data: defineTable({
+    //器具トレーニング
+    w_training: defineTable({
         userId: v.id("users"), // ConvexのusersテーブルのIDを紐付ける
-        date: v.number(),
-        time: v.string(),
-        menu: v.string(),
-        kcal: v.number(),
-    }).index("by_userId", ["userId"]),
+        date: v.date(),
+        exercise: v.string(), // 例: "ベンチプレス", "デッドリフト"
+        weight: v.number(), // 使用した重量
+        reps: v.number(), // 繰り返し回数
+        sets: v.number(), // セット数
+    }),
 
-    // トレーニング動画の記録
-    t_video: defineTable({
+    // レシピ情報
+    recipe: defineTable({
         userId: v.id("users"), // ConvexのusersテーブルのIDを紐付ける
-        training_name: v.string(),
-        video_url: v.string(),
-        count: v.number(),
-        kcal_cons: v.number(),
-    }).index("by_userId", ["userId"]),
+        name: v.string(), // レシピ名
+        ingredients: v.array(v.string()), // 材料のリスト
+        instructions: v.string(), // 調理手順
+        memo: v.optional(v.string()), // メモ（オプション）
+    }),
+
+    //ダイエッター向けトレーニング
+    t_menu: defineTable({
+        userId: v.id("users"), // ConvexのusersテーブルのIDを紐付ける
+        date: v.date(), // トレーニング日
+        exercise: v.string(), // 例: "ランニング", "サイクリング"
+        duration: v.optional(v.number()), // 時間（分単位）
+        reps: v.optional(v.number()), // 回数
+        caloriesBurned: v.number(), // 消費カロリー
+    }),
+
+    //トレーニングリスト
+    t_playlist: defineTable({
+        userId: v.id("users"), // ConvexのusersテーブルのIDを紐付ける
+        title: v.string(), // プレイリスト名
+        menu: v.array(v.string()), // トレーニングの名前
+        baseCalories: v.array(v.number()), // 基本消費カロリー
+    }),
 });
