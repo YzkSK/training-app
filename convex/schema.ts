@@ -2,13 +2,15 @@ import { defineSchema, defineTable } from "convex/server";
 import { v } from "convex/values";
 
 export default defineSchema({
-  // ユーザー情報 (Clerkと連携)
+    // ユーザー情報 (Clerkと連携)
     users: defineTable({
-        user_name: v.string(),
+        username: v.string(),
         email: v.string(),
-        clerkId: v.string(), // ClerkのユーザーIDを保存
+        clerkId: v.optional(v.string()), // ClerkのユーザーIDを保存
     })
-    .index("by_clerk_id", ["clerkId"]) // clerkIdで検索するためのインデックス
+    // clerkIdで検索し、その値が重複しないようにするインデックス
+    .index("by_clerk_id", ["clerkId"])
+    // emailで検索するためのインデックス
     .index("by_email", ["email"]),
 
     // ユーザーのプロフィール情報
@@ -18,10 +20,10 @@ export default defineSchema({
         age: v.number(),
         height: v.number(),
         weight: v.number(),
-        move_level: v.union(v.literal(0),v.literal(1),v.literal(2),v.literal(3),v.literal(4),v.literal(5)),
+        move_level: v.union(v.literal(0), v.literal(1), v.literal(2), v.literal(3), v.literal(4), v.literal(5)),
     })
-    .index("by_userId", ["userId"])
-    .unique(), // 1ユーザーにつき1つのプロフィールデータ
+    // userIdをユニークにする（1ユーザーにつき1プロフィール）インデックス
+    .index("by_userId", ["userId"]),
 
     // トレーニング記録
     t_data: defineTable({
@@ -32,7 +34,7 @@ export default defineSchema({
         kcal_cons: v.number(),
     }).index("by_userId", ["userId"]),
 
-  // 食事記録
+    // 食事記録
     f_data: defineTable({
         userId: v.id("users"), // ConvexのusersテーブルのIDを紐付ける
         date: v.number(),
@@ -44,7 +46,7 @@ export default defineSchema({
     // トレーニング動画の記録
     t_video: defineTable({
         userId: v.id("users"), // ConvexのusersテーブルのIDを紐付ける
-        traning_name: v.string(),
+        training_name: v.string(),
         video_url: v.string(),
         count: v.number(),
         kcal_cons: v.number(),
