@@ -2,9 +2,9 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import React, { createContext, useContext, useEffect, useState } from 'react';
 
 interface ModeContextType {
-  currentMode: 'trainer' | 'dieter' | null;
-  setAndStoreMode: (mode: 'trainer' | 'dieter') => Promise<void>;
-  isLoading: boolean;
+    currentMode: 'trainer' | 'dieter' | null;
+    setAndStoreMode: (mode: 'trainer' | 'dieter') => Promise<void>;
+    isLoading: boolean;
 }
 
 export const ModeContext = createContext<ModeContextType | undefined>(undefined);

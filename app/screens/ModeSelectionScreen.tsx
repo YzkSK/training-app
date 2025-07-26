@@ -1,4 +1,4 @@
-import { useMode } from '@/contexts/ModeContext';
+import { useMode } from '../contexts/ModeContext';
 import { useRouter } from 'expo-router';
 import React from 'react';
 import { Alert, Button, StyleSheet, Text, View } from 'react-native';
