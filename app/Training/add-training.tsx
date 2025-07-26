@@ -1,30 +1,34 @@
 // app/add-training.tsx
 import { Ionicons } from '@expo/vector-icons';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useLocalSearchParams, useRouter } from 'expo-router'; // useLocalSearchParams をインポート
-import { useState } from 'react';
+// AsyncStorage はもう使用しません
+// import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useLocalSearchParams, useRouter } from 'expo-router';
+import React, { useState } from 'react'; // React をインポート
 import { Alert, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { Button, TextInput } from 'react-native-paper';
 
-// --- 型定義 ---
-type TrainingData = {
-  id: number;
-  title: string;
-  values: { [key: string]: string };
-  type: 'weight' | 'bodyweight';
-  notes?: string; // メモも保存できるように追加
-};
+import { useMutation } from 'convex/react'; // Convex hooksをインポート
+import { api } from '../../convex/_generated/api'; // Convex APIをインポート
 
-const STORAGE_KEY = '@myTrainingApp:logs'; 
+// --- 型定義 ---
+// Convexのテーブルスキーマに合わせるため、ここでは直接使用せず、バックエンドの引数に合わせる
+// type TrainingData = { ... }; // これはもう不要
+
+// STORAGE_KEY はもう不要
+// const STORAGE_KEY = '@myTrainingApp:logs'; 
 
 export default function AddTrainingScreen() {
   const router = useRouter();
-  const params = useLocalSearchParams(); // ルーターからパラメータを取得
+  const params = useLocalSearchParams();
+
+  // Convexのミューテーションを準備
+  const addWeightTraining = useMutation(api.w_training.add);
+  const addBodyweightTraining = useMutation(api.bw_training.add);
 
   // --- State定義 ---
   const [trainingName, setTrainingName] = useState('');
   const [reps, setReps] = useState('');
-  const [weight, setWeight] = useState('');
+  const [weight, setWeight] = useState(''); // ウエイトトレーニング用
   const [sets, setSets] = useState('');
   const [notes, setNotes] = useState('');
   const [trainingType, setTrainingType] = useState<'weight' | 'bodyweight'>('weight');
@@ -42,51 +46,48 @@ export default function AddTrainingScreen() {
       Alert.alert('エラー', '重量を数字で入力してください。');
       return;
     }
-    if (!reps.trim() || isNaN(Number(reps))) {
-      Alert.alert('エラー', '回数を数字で入力してください。');
+    if (!reps.trim() || isNaN(Number(reps)) || Number(reps) <= 0) {
+      Alert.alert('エラー', '回数を有効な数字で入力してください。');
       return;
     }
-    if (!sets.trim() || isNaN(Number(sets))) {
-      Alert.alert('エラー', 'セット数を数字で入力してください。');
+    if (!sets.trim() || isNaN(Number(sets)) || Number(sets) <= 0) {
+      Alert.alert('エラー', 'セット数を有効な数字で入力してください。');
       return;
     }
-
-    // --- 保存するデータを作成 ---
-    const newTraining: TrainingData = {
-      id: Date.now(),
-      title: trainingName.trim(),
-      values: { 
-        kg: trainingType === 'weight' ? weight.trim() : '',
-        reps: reps.trim(), 
-        sets: sets.trim() 
-      }, 
-      type: trainingType,
-      notes: notes.trim(), // メモも保存
-    };
 
     try {
-      // --- AsyncStorageへの保存処理 ---
-      const jsonValue = await AsyncStorage.getItem(STORAGE_KEY);
-      let allLogs = jsonValue !== null ? JSON.parse(jsonValue) : {};
-      const currentDayLogs = allLogs[dateKey] ? [...allLogs[dateKey]] : [];
-      
-      const isDuplicate = currentDayLogs.some(t => t.title === newTraining.title && t.type === newTraining.type);
-      if (isDuplicate) {
-        Alert.alert('エラー', '同じ名前のトレーニングが既にこの日に存在します。');
-        return;
+      const parsedReps = Number(reps);
+      const parsedSets = Number(sets);
+      const trimmedNotes = notes.trim() === '' ? undefined : notes.trim(); // 空の場合は undefined を渡す
+
+      if (trainingType === 'weight') {
+        const parsedWeight = Number(weight);
+        await addWeightTraining({
+          date: dateKey,
+          exercise: trainingName.trim(),
+          weight: parsedWeight,
+          reps: parsedReps,
+          sets: parsedSets,
+          notes: trimmedNotes,
+        });
+      } else { // 'bodyweight'
+        await addBodyweightTraining({
+          date: dateKey,
+          exercise: trainingName.trim(),
+          reps: parsedReps,
+          sets: parsedSets,
+          notes: trimmedNotes,
+        });
       }
 
-      const updatedDayLogs = [...currentDayLogs, newTraining];
-      allLogs[dateKey] = updatedDayLogs;
-
-      await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(allLogs));
       Alert.alert('成功', 'トレーニングが保存されました！', [
-        { text: 'OK', onPress: () => router.replace('/') } 
+        { text: 'OK', onPress: () => router.replace('/') }
       ]);
 
-    } catch (e) {
+    } catch (e: any) { // エラーの型を any にして console.error に渡せるように
       console.error('トレーニングの保存に失敗しました:', e);
-      Alert.alert('エラー', 'トレーニングの保存に失敗しました。');
+      // Convexからのエラーメッセージがあれば表示
+      Alert.alert('エラー', `トレーニングの保存に失敗しました: ${e.message || '不明なエラー'}`);
     }
   };
 
@@ -104,7 +105,7 @@ export default function AddTrainingScreen() {
           onChangeText={setTrainingName}
           mode="outlined"
           style={styles.input}
-          placeholder="例: スクワット"
+          placeholder="例: スクワット / プッシュアップ"
         />
 
         <View style={styles.typeSelectionContainer}>
@@ -145,14 +146,13 @@ export default function AddTrainingScreen() {
         <Button mode="contained" onPress={handleSaveTraining} style={styles.saveButton} labelStyle={styles.buttonLabel}>
           トレーニングを保存
         </Button>
-        {/* Homeに戻るボタン（オプション） */}
-                    <Button
-                      mode="outlined"
-                      onPress={() => router.back()}
-                      style={styles.backButton}
-                    >
-                      戻る
-                    </Button>
+        <Button
+          mode="outlined"
+          onPress={() => router.back()}
+          style={styles.backButton}
+        >
+          戻る
+        </Button>
       </View>
     </ScrollView>
   );
@@ -174,5 +174,5 @@ const styles = StyleSheet.create({
   typeButtonTextActive: { color: 'white', fontWeight: 'bold' },
   saveButton: { marginTop: 20, width: '80%' },
   buttonLabel: { fontSize: 18 },
-  backButton: { marginTop: 10, width: '80%' }, // 追加
+  backButton: { marginTop: 10, width: '80%' },
 });
