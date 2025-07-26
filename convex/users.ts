@@ -9,6 +9,7 @@ export const create = internalMutation({
         clerkId: v.string(),
         email: v.string(),
         username: v.optional(v.string()),
+        mode: v.union(v.literal("trainer"), v.literal("dieter")), // トレーニングモード
     },
     handler: async (ctx, args) => {
         // 既存のユーザーがいないか確認（念のため）
