@@ -1,11 +1,11 @@
 import { SignOutButton } from '@/components/SignOutButton'
 import { SignedIn, SignedOut, useUser } from '@clerk/clerk-expo'
 import { Link } from 'expo-router'
-import React from 'react'
 import { Text, View } from 'react-native'
 
 export default function Page() {
   const { user } = useUser()
+  console.log('User:', user)
 
   return (
     <View>
