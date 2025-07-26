@@ -28,6 +28,7 @@ export const create = internalMutation({
             clerkId: args.clerkId,
             email: args.email,
             username: args.username ?? "",
+            mode: args.mode,
         });
         return userId;
     },
