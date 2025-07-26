@@ -76,4 +76,13 @@ export default defineSchema({
         baseCalories: v.array(v.number()), // 基本消費カロリー
     })
     .index("by_userId", ["userId"]),
+
+    //日毎の摂取カロリーと消費カロリーの記録
+    kcal_record: defineTable({
+        userId: v.id("users"), // ConvexのusersテーブルのID
+        date: v.string(), // 日付
+        intakeCalories: v.number(), // 摂取カロリー
+        burnedCalories: v.number(), // 消費カロリー
+    })
+    .index("by_userId", ["userId"]),
 });
