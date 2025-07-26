@@ -7,10 +7,9 @@ export default defineSchema({
         username: v.string(),
         email: v.string(),
         clerkId: v.optional(v.string()), // ClerkのユーザーIDを保存
-        mode: v.union(v.literal("trainer"), v.literal("dieter")), // トレーニングモード
-
+        mode: v.optional(v.union(v.literal("trainer"), v.literal("dieter"))), // トレーニングモード
     })
-    // clerkIdで検索し、その値が重複しないようにするインデックス
+    // clerkIdで検索するためのインデックス
     .index("by_clerk_id", ["clerkId"])
     // emailで検索するためのインデックス
     .index("by_email", ["email"]),
