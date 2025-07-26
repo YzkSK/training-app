@@ -6,26 +6,34 @@ import { PlaylistProvider } from './contexts/PlaylistContext';
 export default function Layout() {
   return (
     <ModeProvider>
-      <PlaylistProvider>
-        <Drawer>
-          <Drawer.Screen
-            name="tabs"
-            options={{
-              title: 'メイン',
-            }}
-          />
-          <Drawer.Screen
-            name="profile"
-            options={{
-              title: 'プロフィール',
-            }}
-          />
-          <Drawer.Screen
-            name="PlaylistList"
-            options={{
-              title: 'マイ再生リスト',
-            }}
-          />
+    <PlaylistProvider>
+    <Drawer>
+      <Drawer.Screen
+        name="tabs"
+        options={{
+          title: 'メイン',
+        }}
+      />
+
+      <Drawer.Screen
+        name="profile"
+        options={{
+          title: 'プロフィール',
+        }}
+      />
+
+      <Drawer.Screen
+        name="record"
+        options={{
+          title: '記録',
+        }}
+      />
+      <Drawer.Screen
+        name="PlaylistList"
+        options={{
+          title: 'マイ再生リスト',
+        }}
+      />
 
           <Drawer.Screen name="index" redirect={true} />
           <Drawer.Screen name="components/FloatingActionButton" redirect={true} />
