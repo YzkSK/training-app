@@ -1,9 +1,12 @@
 // app/add-recipe.tsx
-import { Ionicons } from '@expo/vector-icons'; // Ioniconsをインポート
-import { useRouter } from 'expo-router'; // useRouterをインポート
-import React, { useState } from 'react'; // useStateをインポート
-import { ScrollView, StyleSheet, Text, View } from 'react-native'; // ScrollViewをインポート
-import { Button, TextInput } from 'react-native-paper'; // ButtonとTextInputをインポート
+import { Ionicons } from '@expo/vector-icons';
+import { useRouter } from 'expo-router';
+import React, { useState } from 'react';
+import { ScrollView, StyleSheet, Text, View, Alert } from 'react-native'; // Alertをインポート
+import { Button, TextInput } from 'react-native-paper';
+
+import { useMutation } from 'convex/react';
+import { api } from '../../convex/_generated/api';
 
 export default function AddRecipeScreen() {
   const router = useRouter();
@@ -14,16 +17,37 @@ export default function AddRecipeScreen() {
   const [instructions, setInstructions] = useState('');
   const [notes, setNotes] = useState('');
 
-  const handleSaveRecipe = () => {
-    console.log('レシピを保存しました。');
-    console.log('レシピ名:', recipeName);
-    console.log('材料:', ingredients);
-    console.log('作り方:', instructions);
-    console.log('メモ:', notes);
-    // ここに保存ロジック（例: Firestoreへの保存など）を追加します。
+  // Convexのaddミューテーションを使用
+  const addRecipe = useMutation(api.recipe.add);
 
-    // 保存後に前の画面に戻る例
-    router.back();
+  const handleSaveRecipe = async () => {
+    // 入力値のバリデーション (簡易的)
+    if (!recipeName || !ingredients || !instructions) {
+      Alert.alert('入力エラー', 'レシピ名、材料、作り方は必須項目です。');
+      return;
+    }
+
+    try {
+      // 材料と作り方を改行で分割し、配列にする
+      const ingredientsArray = ingredients.split('\n').filter(item => item.trim() !== '');
+      const instructionsArray = instructions.split('\n').filter(item => item.trim() !== '');
+
+      // Convexのaddミューテーションを呼び出し、データを保存
+      await addRecipe({
+        name: recipeName,
+        ingredients: ingredientsArray,
+        instructions: instructionsArray.join('\n'),
+        memo: notes.trim() !== '' ? notes : undefined, // メモが空の場合はundefinedを渡す
+      });
+
+      Alert.alert('保存成功', 'レシピが正常に保存されました！');
+      console.log('レシピを保存しました。');
+      // 保存後に前の画面に戻る
+      router.back();
+    } catch (error) {
+      console.error('レシピの保存中にエラーが発生しました:', error);
+      Alert.alert('保存エラー', 'レシピの保存中に問題が発生しました。');
+    }
   };
 
   return (
@@ -45,36 +69,36 @@ export default function AddRecipeScreen() {
 
         {/* 材料入力欄 */}
         <TextInput
-          label="材料"
+          label="材料 (1行に1つの材料を記述)"
           value={ingredients}
           onChangeText={setIngredients}
           mode="outlined"
-          multiline // 複数行入力可能にする
-          numberOfLines={4} // 初期表示行数
+          multiline
+          numberOfLines={4}
           style={styles.inputMultiline}
-          placeholder="例: 鶏もも肉 300g, 玉ねぎ 1個, カレールー 1箱"
+          placeholder="例:&#10;鶏もも肉 300g&#10;玉ねぎ 1個&#10;カレールー 1箱" // ヒントとして改行を入れておく
         />
 
         {/* 作り方入力欄 */}
         <TextInput
-          label="作り方"
+          label="作り方 (手順ごとに1行で記述)"
           value={instructions}
           onChangeText={setInstructions}
           mode="outlined"
-          multiline // 複数行入力可能にする
-          numberOfLines={8} // 初期表示行数
+          multiline
+          numberOfLines={8}
           style={styles.inputMultiline}
-          placeholder="例: 1. 鶏肉と玉ねぎを切る..."
+          placeholder="例:&#10;1. 鶏肉と玉ねぎを切る&#10;2. フライパンで鶏肉を炒める&#10;3. 玉ねぎを加えて炒める"
         />
 
         {/* メモ入力欄 */}
         <TextInput
-          label="メモ"
+          label="メモ (オプション)"
           value={notes}
           onChangeText={setNotes}
           mode="outlined"
-          multiline // 複数行入力可能にする
-          numberOfLines={3} // 初期表示行数
+          multiline
+          numberOfLines={3}
           style={styles.inputMultiline}
           placeholder="例: ご飯と一緒に食べると美味しい"
         />
@@ -95,7 +119,7 @@ export default function AddRecipeScreen() {
 
 const styles = StyleSheet.create({
   scrollContainer: {
-    flexGrow: 1, // コンテンツが画面より大きい場合にスクロール可能にする
+    flexGrow: 1,
     justifyContent: 'center',
   },
   container: {
@@ -116,7 +140,7 @@ const styles = StyleSheet.create({
   inputMultiline: {
     width: '100%',
     marginBottom: 15,
-    minHeight: 80, // 複数行入力の最小高さ
+    minHeight: 80,
   },
   saveButton: {
     marginTop: 30,
