@@ -1,17 +1,27 @@
-// app/screens/ModeSelectionScreen.tsx
-import { Ionicons } from '@expo/vector-icons'; // ★ここを追加・修正
-import { useRouter } from 'expo-router'; // ★ここを追加・修正
-import { Alert, StyleSheet, Text, TouchableOpacity, View } from 'react-native'; // ★ここを追加・修正
-import { useMode } from '../diet/drawer/contexts/ModeContext'; // ★ここを追加・修正 (パスは app/screens から app/contexts への相対パス)
+import { useMutation } from 'convex/react';
+import { api } from '@/convex/_generated/api';
+import { Ionicons } from '@expo/vector-icons';
+import { useRouter } from 'expo-router';
+import { Alert, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { useMode } from '../diet/drawer/contexts/ModeContext';
 
 export default function ModeSelectionScreen() {
     const { setAndStoreMode } = useMode();
     const router = useRouter();
 
+    const updateModeInDB = useMutation(api.users.updateMode);
+
     const selectMode = async (mode: 'trainer' | 'dieter') => {
-        await setAndStoreMode(mode);
-        Alert.alert("モード選択", `${mode === 'trainer' ? 'トレーニー' : 'ダイエッター'}モードが選択されました！`);
-        router.replace('/');
+        try {
+            await updateModeInDB({ mode: mode});
+            await setAndStoreMode(mode);
+            Alert.alert("モード選択", `${mode === 'trainer' ? 'トレーニー' : 'ダイエッター'}モードが選択されました！`);
+            router.replace('/');
+
+        } catch (error) {
+            console.error("モード更新に失敗しました:", error);
+            Alert.alert("エラー", "モードの更新中にエラーが発生しました。");
+        }
     };
 
     return (

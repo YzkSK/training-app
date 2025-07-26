@@ -7,8 +7,9 @@ export default defineSchema({
         username: v.string(),
         email: v.string(),
         clerkId: v.optional(v.string()), // ClerkのユーザーIDを保存
+        mode: v.optional(v.union(v.literal("trainer"), v.literal("dieter"))), // トレーニングモード
     })
-    // clerkIdで検索し、その値が重複しないようにするインデックス
+    // clerkIdで検索するためのインデックス
     .index("by_clerk_id", ["clerkId"])
     // emailで検索するためのインデックス
     .index("by_email", ["email"]),
@@ -20,8 +21,6 @@ export default defineSchema({
         age: v.number(),
         height: v.number(),
         weight: v.number(),
-        move_level: v.union(v.literal(0), v.literal(1), v.literal(2), v.literal(3), v.literal(4), v.literal(5)),
-        mode: v.union(v.literal("trainer"), v.literal("dieter")), // トレーニングモード
     })
     // userIdをユニークにする（1ユーザーにつき1プロフィール）インデックス
     .index("by_userId", ["userId"]),
