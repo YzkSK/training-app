@@ -2,7 +2,6 @@
 import { ModeProvider } from '@/contexts/ModeContext';
 import { Drawer } from 'expo-router/drawer';
 import { PlaylistProvider } from './contexts/PlaylistContext';
-// import { PlaylistProvider } from './contexts/PlaylistContext'; // ★ この行を削除
 
 export default function Layout() {
   return (
@@ -23,9 +22,12 @@ export default function Layout() {
         }}
       />
 
-      {/* PlaylistList はfitness.tsxが担うが、Drawerメニューに表示したい場合は残す。
-          ただし、このルート名が app/_layout.tsx にもなければナビゲーションエラーになる。
-      */}
+      <Drawer.Screen
+        name="record"
+        options={{
+          title: '記録',
+        }}
+      />
       <Drawer.Screen
         name="PlaylistList"
         options={{

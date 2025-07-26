@@ -29,12 +29,6 @@ export default function Layout() {
           headerShown: false, // ドロワーのヘッダーを非表示にする
         }}
       />
-
-      {/* PlaylistList はfitness.tsxが担うが、Drawerメニューに表示したい場合は残す。
-          このままだと app/_layout.tsx に PlaylistList の定義が無いため、この導線は機能しません。
-          もしDrawerメニューに「マイ再生リスト」を独立して表示したいなら、
-          app/_layout.tsx にも PlaylistList の Stack.Screen 定義が必要です。
-      */}
       <Tabs.Screen
         name="PlaylistDetail"
         options={{
