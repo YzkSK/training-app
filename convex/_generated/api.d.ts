@@ -13,6 +13,7 @@ import type {
   FilterApi,
   FunctionReference,
 } from "convex/server";
+import type * as clerk from "../clerk.js";
 import type * as personal from "../personal.js";
 import type * as recipe from "../recipe.js";
 import type * as t_menu from "../t_menu.js";
@@ -28,6 +29,7 @@ import type * as w_training from "../w_training.js";
  * ```
  */
 declare const fullApi: ApiFromModules<{
+  clerk: typeof clerk;
   personal: typeof personal;
   recipe: typeof recipe;
   t_menu: typeof t_menu;
