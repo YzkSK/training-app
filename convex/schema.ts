@@ -21,6 +21,7 @@ export default defineSchema({
         age: v.number(),
         height: v.number(),
         weight: v.number(),
+        move_level: v.union(v.literal(0), v.literal(1), v.literal(2), v.literal(3), v.literal(4), v.literal(5)), // 運動レベル
     })
     // userIdをユニークにする（1ユーザーにつき1プロフィール）インデックス
     .index("by_userId", ["userId"]),
@@ -56,23 +57,28 @@ export default defineSchema({
     })
     .index("by_userId", ["userId"]),
 
+    //マスタートレーニングメニュー
+    master_training_menu: defineTable({
+        exerciseName: v.string(), // トレーニング名
+        baseCalories: v.number(), // 基本消費カロリー
+        unit: v.union(v.literal("reps"), v.literal("time")),
+    }),
+
+    //ユーザー個人のトレーニングリスト
+    t_playlist: defineTable({
+        userId: v.id("users"),
+        title: v.string(), // プレイリスト名
+        items: v.array(v.id("master_training_menu")), // master_training_menuの_idを配列で保持
+    }).index("by_userId", ["userId"]),
+
     //ダイエッター向けトレーニング
     t_menu: defineTable({
         userId: v.id("users"), // ConvexのusersテーブルのIDを紐付ける
+        masterMenuItemId: v.id("master_training_menu"), // master_training_menuのID
         date: v.string(), // トレーニング日
-        exercise: v.string(), // 例: "ランニング", "サイクリング"
-        duration: v.optional(v.number()), // 時間（分単位）
-        reps: v.optional(v.number()), // 回数
-        caloriesBurned: v.number(), // 消費カロリー
-    })
-    .index("by_userId", ["userId"]),
-
-    //トレーニングリスト
-    t_playlist: defineTable({
-        userId: v.id("users"), // ConvexのusersテーブルのIDを紐付ける
-        title: v.string(), // プレイリスト名
-        menu: v.array(v.string()), // トレーニングの名前
-        baseCalories: v.array(v.number()), // 基本消費カロリー
+        exercise: v.string(), //マスタートレーニングの名前をコピーして保存
+        performanceValue: v.number(), // 実行した回数または秒数
+        caloriesBurned: v.number(), // 計算後の消費カロリー
     })
     .index("by_userId", ["userId"]),
 

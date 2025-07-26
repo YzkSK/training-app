@@ -18,7 +18,7 @@ import type * as http from "../http.js";
 import type * as personal from "../personal.js";
 import type * as recipe from "../recipe.js";
 import type * as t_menu from "../t_menu.js";
-import type * as t_playlist from "../t_playlist.js";
+import type * as t_playlist from "../t_list_manage.js";
 import type * as users from "../users.js";
 import type * as w_training from "../w_training.js";
 
