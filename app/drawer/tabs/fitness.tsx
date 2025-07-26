@@ -1,62 +1,97 @@
-// app/PlaylistList.tsx
-import { useNavigation } from '@react-navigation/native'; // useNavigation をインポート
+// app/drawer/tabs/fitness.tsx (修正後 - PlaylistProvider をコンポーネント内部でラップ)
+
+import FloatingActionButton from '@/components/FloatingActionButton';
+import { NavigationProp, useNavigation } from '@react-navigation/native';
 import React from 'react';
-import { ScrollView, StyleSheet, Text, TextStyle, TouchableOpacity, View, ViewStyle } from 'react-native';
-import { usePlaylists } from '../../drawer/contexts/PlaylistContext'; // app から contexts への相対パス
+import { Platform, SafeAreaView, ScrollView, StatusBar, StyleSheet, Text, TextStyle, TouchableOpacity, View, ViewStyle } from 'react-native';
 
-import type { StackNavigationProp } from '@react-navigation/stack';
+// PlaylistContext.tsx から usePlaylists と Playlist 型をインポート
+import { router } from 'expo-router';
+import { Playlist, PlaylistProvider, usePlaylists } from '../contexts/PlaylistContext';
 
-type RootStackParamList = {
+// 型定義: ルートパラメータ型
+type FitnessStackParamList = {
   PlaylistDetail: { playlistId: string; playlistName: string };
-  // 他の画面があればここに追加
 };
 
-const PlaylistListScreen: React.FC = () => {
-  const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
-  const { playlists } = usePlaylists(); // Contextからプレイリストデータを取得
+const FitnessScreen: React.FC = () => {
+  const navigation = useNavigation<NavigationProp<FitnessStackParamList>>();
+
+  const { playlists } = usePlaylists(); // ここで usePlaylists を呼び出す
 
   const handlePlaylistPress = (playlistId: string, playlistName: string) => {
-    // プレイリスト詳細画面へ遷移
-    navigation.navigate('PlaylistDetail', { playlistId, playlistName }); // 型エラー回避不要
+    router.push({ pathname: '../../diet/PlaylistDetail', params: { playlistId, playlistName } });
   };
 
+
   return (
-    <View style={playlistListStyles.container}>
-      <Text style={playlistListStyles.title}>あなたの再生リスト</Text>
-      {playlists.length === 0 ? (
-        <Text style={playlistListStyles.emptyText}>まだ再生リストがありません。</Text>
-      ) : (
-        <ScrollView style={playlistListStyles.scrollView}>
-          {playlists.map(playlist => (
-            <TouchableOpacity
-              key={playlist.id}
-              style={playlistListStyles.playlistItem}
-              onPress={() => handlePlaylistPress(playlist.id, playlist.name)}
-            >
-              <Text style={playlistListStyles.playlistName}>{playlist.name}</Text>
-              <Text style={playlistListStyles.itemCount}>{playlist.items.length} 個のアイテム</Text>
-            </TouchableOpacity>
-          ))}
-        </ScrollView>
-      )}
-    </View>
+    // ★ SafeAreaView の直下に PlaylistProvider を配置します
+    <SafeAreaView style={fitnessScreenStyles.safeArea}>
+      <PlaylistProvider> {/* FitnessScreen が usePlaylists() を呼び出すので、FitnessScreen の内容全体をラップ */}
+        <View style={fitnessScreenStyles.container}>
+
+          <ScrollView style={fitnessScreenStyles.scrollViewContent}>
+
+            <View style={fitnessScreenStyles.sectionHeader}>
+              <Text style={fitnessScreenStyles.sectionTitle}>あなたの再生リスト</Text>
+            </View>
+
+            {playlists.length === 0 ? (
+              <Text style={fitnessScreenStyles.emptyPlaylistText}>まだ再生リストがありません。</Text>
+            ) : (
+              <View style={fitnessScreenStyles.playlistListContainer}>
+                {playlists.map((playlist: Playlist) => (
+                  <TouchableOpacity
+                    key={playlist.id}
+                    style={fitnessScreenStyles.playlistItem}
+                    onPress={() => handlePlaylistPress(playlist.id, playlist.name)}
+                  >
+                    <Text style={fitnessScreenStyles.playlistName}>{playlist.name}</Text>
+                    <Text style={fitnessScreenStyles.itemCount}>{playlist.items.length} 個のアイテム</Text>
+                  </TouchableOpacity>
+                ))}
+              </View>
+            )}
+          </ScrollView>
+             <FloatingActionButton />
+        </View>
+      </PlaylistProvider>
+    </SafeAreaView>
   );
 };
 
-const playlistListStyles = StyleSheet.create({
+export default FitnessScreen;
+
+// スタイルシート
+const fitnessScreenStyles = StyleSheet.create({
+  safeArea: {
+    flex: 1,
+    backgroundColor: '#f5f5f5',
+  } as ViewStyle,
   container: {
     flex: 1,
     backgroundColor: '#f5f5f5',
-    padding: 20,
   } as ViewStyle,
-  title: {
-    fontSize: 24,
+  scrollViewContent: {
+    flex: 1,
+    paddingHorizontal: 20,
+    paddingTop: Platform.OS === 'android' ? ((StatusBar.currentHeight ?? 0) + 20) : 20,
+    paddingBottom: 20,
+  } as ViewStyle,
+
+  sectionHeader: {
+    marginTop: 0,
+    marginBottom: 15,
+    borderBottomWidth: 1,
+    borderBottomColor: '#ccc',
+    paddingBottom: 5,
+  } as ViewStyle,
+  sectionTitle: {
+    fontSize: 20,
     fontWeight: 'bold',
-    marginBottom: 20,
     color: '#333',
   } as TextStyle,
-  scrollView: {
-    flex: 1,
+  playlistListContainer: {
   } as ViewStyle,
   playlistItem: {
     backgroundColor: '#fff',
@@ -85,12 +120,11 @@ const playlistListStyles = StyleSheet.create({
     color: '#666',
     marginLeft: 10,
   } as TextStyle,
-  emptyText: {
+  emptyPlaylistText: {
     fontSize: 16,
     color: '#666',
     textAlign: 'center',
-    marginTop: 50,
+    marginTop: 10,
+    marginBottom: 20,
   } as TextStyle,
 });
-
-export default PlaylistListScreen;

@@ -1,49 +1,63 @@
-// app/drawer/tabs/_layout.tsx (修正後 - PlaylistProvider を削除)
+// app/drawer/_layout.tsx (修正後 - PlaylistProvider を削除)
 import { FontAwesome6 } from '@expo/vector-icons';
-import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { Tabs } from 'expo-router';
-import React from 'react';
-import { Provider as PaperProvider, Portal } from 'react-native-paper';
+import { Drawer } from 'expo-router/drawer';
+import { RecipeProvider } from '../contexts/RecipeContext';
 
-// PlaylistProvider は上位 (_layout.tsx) に移動したので、ここにはインポートしません。
-// import { PlaylistProvider } from '../../contexts/PlaylistContext'; // ← この行を削除
-
-export default function TabLayout() {
+export default function Layout() {
   return (
-    <PaperProvider>
-      <Portal.Host>
-        {/* ★ PlaylistProvider はここから削除します！ */}
-        <Tabs screenOptions={{ tabBarActiveTintColor: 'blue' }}>
-          {/* フィットネス画面 */}
-          <Tabs.Screen
-            name="fitness"
-            options={{
-              title: 'Fitness',
-              headerShown: false,
-              tabBarIcon: ({ color }) => <FontAwesome6 name="person-walking" size={24} color={color} />,
-            }}
-          />
+    <RecipeProvider>
+    <Tabs>
+      <Tabs.Screen
+        name="fitness"
+        options={{
+          title: 'fitness',
+          tabBarIcon: ({ color, size }) => (
+            <FontAwesome6 name="person-running" size={size} color={color} />
+          ),
+          headerShown: false, // ドロワーのヘッダーを非表示にする
+        }}
+      />
 
-          {/* レシピ画面 */}
-          <Tabs.Screen
-            name="recipe"
-            options={{
-              title: 'Recipe',
-              headerShown: false,
-              tabBarIcon: ({ color }) => <MaterialIcons size={28} name="set-meal" color={color} />,
-            }}
-          />
-          <Tabs.Screen
-            name="PlaylistDetail"
-            options={{
-              title: 'Playlist Detail',
-              headerShown: false,
-              href: null,
-            }}
-          />
-        </Tabs>
-      </Portal.Host>
-    </PaperProvider>
+      <Tabs.Screen
+        name="recipe"
+        options={{
+          title: 'recipe',
+          tabBarIcon: ({ color, size }) => (
+            <FontAwesome6 name="utensils" size={size} color={color} />
+          ),
+          headerShown: false, // ドロワーのヘッダーを非表示にする
+        }}
+      />
+
+      {/* PlaylistList はfitness.tsxが担うが、Drawerメニューに表示したい場合は残す。
+          このままだと app/_layout.tsx に PlaylistList の定義が無いため、この導線は機能しません。
+          もしDrawerメニューに「マイ再生リスト」を独立して表示したいなら、
+          app/_layout.tsx にも PlaylistList の Stack.Screen 定義が必要です。
+      */}
+      <Tabs.Screen
+        name="PlaylistDetail"
+        options={{
+          title: 'マイ再生リスト',
+          headerShown: false, // ドロワーのヘッダーを非表示にする
+          href: null, // この画面は fitness.tsx が担うため、href を null に設定
+        }}
+      />
+
+      <Tabs.Screen
+        name="RecipeDetail"
+        options={{
+          title: 'レシピ詳細',
+          headerShown: false, // ドロワーのヘッダーを非表示にする
+          href: null, // この画面は fitness.tsx が担うため、href を null に設定
+        }}
+      />
+
+      <Drawer.Screen name="index" redirect={true} />
+      <Drawer.Screen name="components/FloatingActionButton" redirect={true} />
+      <Drawer.Screen name="diet/add-fitness" redirect={true} />
+      <Drawer.Screen name="diet/add-recipe" redirect={true} />
+    </Tabs>
+    </RecipeProvider>
   );
 }
-  
