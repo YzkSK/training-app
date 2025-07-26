@@ -1,8 +1,11 @@
-import { ClerkLoaded, ClerkProvider } from '@clerk/clerk-expo';
+import { ClerkLoaded, ClerkProvider, useAuth } from '@clerk/clerk-expo';
 import { ConvexReactClient } from 'convex/react';
+import { ConvexProviderWithClerk } from "convex/react-clerk";
 import { Slot } from 'expo-router';
 import * as SecureStore from 'expo-secure-store';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
+import { TamaguiProvider } from 'tamagui';
+import { tamaguiConfig } from '../tamagui.config';
 
 const publishableKey = process.env.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY!;
 const convex = new ConvexReactClient(process.env.EXPO_PUBLIC_CONVEX_URL!);
@@ -46,9 +49,13 @@ export default function RootLayout() {
     return (
         <ClerkProvider tokenCache={tokenCache} publishableKey={publishableKey}>
             <ClerkLoaded>
-                <SafeAreaView style={{ flex: 1, paddingTop: insets.top }}>
-                    <Slot />
-                </SafeAreaView>
+                <ConvexProviderWithClerk useAuth={useAuth} client={convex}>
+                    <TamaguiProvider config={tamaguiConfig}>
+                        <SafeAreaView style={{ flex: 1, paddingTop: insets.top - 60 }} edges={['right', 'left', 'top']}>
+                            <Slot />
+                        </SafeAreaView>
+                    </TamaguiProvider>
+                </ConvexProviderWithClerk>
             </ClerkLoaded>
         </ClerkProvider>
     )

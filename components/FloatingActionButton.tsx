@@ -40,6 +40,7 @@ const FloatingActionButton: React.FC<FloatingActionButtonProps> = () => {
           onPress: () => {
             console.log('レシピ追加を押しました');
             router.push('../../diet/add-recipe');
+
           },
         },
       ]}
