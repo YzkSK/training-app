@@ -1,5 +1,5 @@
 import { Stack } from 'expo-router';
-import { ModeProvider } from '../contexts/ModeContext';
+import { ModeProvider } from '../drawer/contexts/ModeContext';
 
 export default function RootLayout() {
   return (

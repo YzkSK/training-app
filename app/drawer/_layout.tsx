@@ -1,6 +1,6 @@
 // app/drawer/_layout.tsx (修正後 - PlaylistProvider を削除)
-import { ModeProvider } from '@/contexts/ModeContext';
 import { Drawer } from 'expo-router/drawer';
+import { ModeProvider } from './contexts/ModeContext';
 import { PlaylistProvider } from './contexts/PlaylistContext';
 // import { PlaylistProvider } from './contexts/PlaylistContext'; // ★ この行を削除
 
