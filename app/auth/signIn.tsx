@@ -1,5 +1,5 @@
-import { api } from '@/convex/_generated/api'; // ConvexのAPIをインポート
 import { useSignIn } from '@clerk/clerk-expo';
+import { api } from 'convex/_generated/api'; // ConvexのAPIをインポート
 import { useQuery } from 'convex/react'; // ConvexのuseQueryをインポート
 import { Link, useRouter } from 'expo-router';
 import React from 'react';
