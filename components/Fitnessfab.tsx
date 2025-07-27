@@ -31,7 +31,7 @@ const FloatingActionButton: React.FC<FloatingActionButtonProps> = () => {
           label: '運動項目追加',
           onPress: () => {
             console.log('運動項目追加を押しました');
-            router.push('../../diet/add-fitness');
+            router.push('../../add-fitness');
           },
         },
         {
@@ -39,7 +39,7 @@ const FloatingActionButton: React.FC<FloatingActionButtonProps> = () => {
           label: 'レシピ追加',
           onPress: () => {
             console.log('レシピ追加を押しました');
-            router.push('../../diet/add-recipe');
+            router.push('../../add-recipe');
 
           },
         },

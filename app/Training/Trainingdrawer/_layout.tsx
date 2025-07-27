@@ -24,12 +24,9 @@ export default function Layout() {
         }}
       />
       <Drawer.Screen
-        name="profile" // プロフィール画面 (もし存在すれば)
-        options={{
-          title: 'プロフィール',
-           drawerIcon: ({ size, color }) => (
-            <Ionicons name="person-outline" size={size} color={color} />
-          ),
+        name="../add-training.tsx"
+        options= {{
+          title: 'トレーニング記録',
         }}
       />
     </Drawer>

@@ -1,7 +1,7 @@
 import { Ionicons } from '@expo/vector-icons';
-import { useFocusEffect } from 'expo-router';
-import React, { useCallback, useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import {
+  ActivityIndicator,
   Alert,
   SafeAreaView,
   ScrollView,
@@ -9,14 +9,15 @@ import {
   Text,
   TouchableOpacity,
   View,
-  ActivityIndicator,
 } from 'react-native';
 import { Button, TextInput } from 'react-native-paper';
 
 // --- Convex と Clerk のインポート ---
-import { useQuery, useMutation } from 'convex/react';
-import { api } from '../../convex/_generated/api'; // apiパスはプロジェクト構造に合わせて調整
+import { SignOutButton } from '@/components/SignOutButton';
 import { useUser } from '@clerk/clerk-expo';
+import { useMutation, useQuery } from 'convex/react';
+import { YStack } from 'tamagui';
+import { api } from '../../../convex/_generated/api'; // apiパスはプロジェクト構造に合わせて調整
 
 // --- 型定義 ---
 // personal.tsのgenderの型に合わせる
@@ -206,9 +207,16 @@ export default function ProfileScreen() {
         </View>
       </View>
       {isSignedIn && (
-        <Button mode="contained" onPress={() => setIsEditMode(true)} style={styles.editButton}>
-          編集する
-        </Button>
+        <YStack style={{
+          alignItems: 'center',
+          justifyContent: 'center',
+          flex: 1,
+        }}>
+          <Button mode="contained" onPress={() => setIsEditMode(true)} style={styles.editButton}>
+            編集する
+          </Button>
+          <SignOutButton />
+        </YStack>
       )}
     </View>
   );
@@ -428,6 +436,7 @@ const styles = StyleSheet.create({
   editButton: {
     marginTop: 20,
     paddingVertical: 5,
+    marginBottom: 10,
   },
   displayRow: {
     flexDirection: 'row',

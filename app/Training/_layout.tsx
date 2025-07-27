@@ -4,7 +4,7 @@ export default function TrainingLayout() {
   return (
     <Stack>
       <Stack.Screen
-        name="trainingdrawer"
+        name="Trainingdrawer"
         options={{ headerShown: false }}
       />
       <Stack.Screen
