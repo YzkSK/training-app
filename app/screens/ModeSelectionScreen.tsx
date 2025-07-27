@@ -1,6 +1,6 @@
-import { useMutation } from 'convex/react';
 import { api } from '@/convex/_generated/api';
 import { Ionicons } from '@expo/vector-icons';
+import { useMutation } from 'convex/react';
 import { useRouter } from 'expo-router';
 import { Alert, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { useMode } from '../diet/drawer/contexts/ModeContext';
@@ -16,7 +16,11 @@ export default function ModeSelectionScreen() {
             await updateModeInDB({ mode: mode});
             await setAndStoreMode(mode);
             Alert.alert("モード選択", `${mode === 'trainer' ? 'トレーニー' : 'ダイエッター'}モードが選択されました！`);
-            router.replace('/');
+            if (mode === 'trainer') {
+                router.replace('../Training');
+            } else {
+                router.replace('../diet');
+            }
 
         } catch (error) {
             console.error("モード更新に失敗しました:", error);
