@@ -6,7 +6,7 @@ import { Alert, Dimensions, Modal, Platform, SafeAreaView, ScrollView, StatusBar
 import { Calendar } from 'react-native-calendars';
 import Svg, { Circle } from 'react-native-svg';
 
-import { useQuery, useMutation } from 'convex/react';
+import { useMutation, useQuery } from 'convex/react';
 import { api } from '../../../convex/_generated/api';
 import { Doc } from '../../../convex/_generated/dataModel'; // ConvexのDoc型をインポート
 
@@ -350,3 +350,4 @@ const recordScreenStyles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#333',
   }
+});
